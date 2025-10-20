@@ -107,7 +107,9 @@ public class CustomerModel {
          * This will cause the trolley price to double each time, which is
          * very incorrect.
          */
-        trolley.add(theProduct);
+        Product pNew = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
+       // Commented out trolley.add(theProduct);
+        trolley.add(pNew);
     }
 
     void checkOut() throws IOException, SQLException {
