@@ -81,6 +81,34 @@ public class CustomerModel {
         updateView();
     }
 
+    /**
+     * This is responsible for making the trolley more organised, and does not
+     * make duplicate items
+     */
+    void organisedTrolley()
+    {
+        // Each product in a trolley
+        for(Product p : trolley)
+        {
+            /**
+             * Is the productID from p equal to theProduct ID?
+             */
+            if (p.getProductId().equals(theProduct.getProductId()))
+            {
+                /**
+                 * set the ordered quantity from p, and get the orderedQuantity from theProduct.
+                 */
+                p.setOrderedQuantity(p.getOrderedQuantity() + theProduct.getOrderedQuantity());
+                return;
+            }
+        }
+        /**
+         * This will cause the trolley price to double each time, which is
+         * very incorrect.
+         */
+        trolley.add(theProduct);
+    }
+
     void checkOut() throws IOException, SQLException {
         if(!trolley.isEmpty()){
             // Group the products in the trolley by productId to optimize stock checking
