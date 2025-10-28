@@ -69,7 +69,7 @@ public class OrderHub  {
     public static OrderHub getOrderHub() {
         if (orderHub == null)
             orderHub = new OrderHub();
-            return orderHub;
+        return orderHub;
     }
 
     //Creates a new order using the provided list of products.
@@ -180,7 +180,7 @@ public class OrderHub  {
         if(state.equals(OrderState.Progressing)) {
             return OrderFileManager.readOrderFile(progressingPath,orderId);
         }else{
-            return "the fuction is only for picker";
+            return "the function is only for picker";
         }
     }
 
@@ -201,7 +201,7 @@ public class OrderHub  {
         }
         notifyOrderTrackers();
         notifyPickerModels();
-        System.out.println("orderMap initilized. "+ orderMap.size() + " orders in total, including:");
+        System.out.println("orderMap initialized. "+ orderMap.size() + " orders in total, including:");
         System.out.println( orderedIds.size() + " Ordered orders, " +progressingIds.size() + " Progressing orders " );
     }
 

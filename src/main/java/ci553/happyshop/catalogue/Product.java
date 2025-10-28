@@ -48,6 +48,8 @@ public class Product implements Comparable<Product> {
         this.orderedQuantity = orderedQuantity;
     }
 
+    public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity;}
+
     @Override
     public int compareTo(Product otherProduct) {
         // Compare by product ID or any other attribute you want to sort by

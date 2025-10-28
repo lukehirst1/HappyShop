@@ -10,6 +10,7 @@ import ci553.happyshop.utility.ProductListFormatter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class CustomerModel {
     private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
+    protected RemoveProductNotifier notifier;
 
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search() throws SQLException {
@@ -70,9 +72,12 @@ public class CustomerModel {
             //TODO
             // 1. Merges items with the same product ID (combining their quantities).
             // 2. Sorts the products in the trolley by product ID.
-            // Bad code, will cause duplicates trolley.add(theProduct);
+
+            // This code originally caused the trolley to duplicate.
+            // It also sorts out the trolley by ProductID.
             organisedTrolley();
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
+            System.out.println("Added to trolley");
         }
         else{
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";
@@ -108,9 +113,9 @@ public class CustomerModel {
          * very incorrect. The revised code is down below.
          */
         Product pNew = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
-       // Commented out trolley.add(theProduct);
+       // trolley.add(theProduct); - Commented out due to duplication
+        groupProductsById(trolley);
         trolley.add(pNew);
-        int test = 0;
     }
 
     void checkOut() throws IOException, SQLException {
@@ -123,7 +128,9 @@ public class CustomerModel {
             ArrayList<Product> groupedTrolley= groupProductsById(trolley);
             ArrayList<Product> insufficientProducts= databaseRW.purchaseStocks(groupedTrolley);
 
-            if(insufficientProducts.isEmpty()){ // If stock is sufficient for all products
+            if (insufficientProducts.isEmpty())
+            {
+                // If stock is sufficient for all products
                 //get OrderHub and tell it to make a new Order
                 OrderHub orderHub =OrderHub.getOrderHub();
                 Order theOrder = orderHub.newOrder(trolley);
@@ -137,7 +144,9 @@ public class CustomerModel {
                 );
                 System.out.println(displayTaReceipt);
             }
-            else{ // Some products have insufficient stock — build an error message to inform the customer
+
+            else
+            { // Some products have insufficient stock — build an error message to inform the customer
                 StringBuilder errorMsg = new StringBuilder();
                 for(Product p : insufficientProducts){
                     errorMsg.append("\u2022 "+ p.getProductId()).append(", ")
@@ -154,9 +163,16 @@ public class CustomerModel {
                 //You can use the provided RemoveProductNotifier class and its showRemovalMsg method for this purpose.
                 //remember close the message window where appropriate (using method closeNotifierWindow() of RemoveProductNotifier class)
                 displayLaSearchResult = "Checkout failed due to insufficient stock for the following products:\n" + errorMsg.toString();
-                System.out.println("stock is not enough");
+                System.out.println("The stock that you requested is not currently available. Please try again later.");
             }
         }
+
+        if (theProduct.getStockQuantity() < theProduct.getOrderedQuantity())
+        {
+            // Throw a error
+            System.out.println("Sorry, that stock is not available at the moment.. Please try again later.");
+        }
+
         else{
             displayTaTrolley = "Your trolley is empty";
             System.out.println("Your trolley is empty");
@@ -168,7 +184,7 @@ public class CustomerModel {
      * Groups products by their productId to optimize database queries and updates.
      * By grouping products, we can check the stock for a given `productId` once, rather than repeatedly
      */
-    private ArrayList<Product> groupProductsById(ArrayList<Product> proList) {
+    protected ArrayList<Product> groupProductsById(ArrayList<Product> proList) {
         Map<String, Product> grouped = new HashMap<>();
         for (Product p : proList) {
             String id = p.getProductId();

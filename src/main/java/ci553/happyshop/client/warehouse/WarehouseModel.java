@@ -79,7 +79,7 @@ public class WarehouseModel {
             theSelectedPro = pro;
             productList.remove(theSelectedPro); //remove the product from product List
 
-            //update databse: delete the product from database
+            //update database: delete the product from database
             databaseRW.deleteProduct(theSelectedPro.getProductId());
 
             //delete the image from imageFolder "images/"
@@ -161,7 +161,7 @@ public class WarehouseModel {
             else{
                 double price = Double.parseDouble(textPrice);
                 int stock= Integer.parseInt(textStock);
-                //update datbase
+                //update database
                 databaseRW.updateProduct(id,description,price,imageName,stock);
 
                 updateView(UpdateForAction.BtnSummitEdit);
