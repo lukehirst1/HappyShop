@@ -103,7 +103,6 @@ public class CustomerModel {
                  * set the ordered quantity from p, and get the orderedQuantity from theProduct.
                  */
                 p.setOrderedQuantity(p.getOrderedQuantity() + theProduct.getOrderedQuantity());
-                Collections.sort(trolley, Comparator.comparing(theProduct::getProductId());
                 return;
             }
         }
@@ -113,8 +112,8 @@ public class CustomerModel {
          */
         Product pNew = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
        // trolley.add(theProduct); - Commented out due to duplication
-        groupProductsById(trolley);
         trolley.add(pNew);
+        Collections.sort(trolley, Comparator.comparing(Product::getProductId));
     }
 
     void checkOut() throws IOException, SQLException {
