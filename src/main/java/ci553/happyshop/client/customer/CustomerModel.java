@@ -2,6 +2,7 @@ package ci553.happyshop.client.customer;
 
 import ci553.happyshop.catalogue.Order;
 import ci553.happyshop.catalogue.Product;
+import ci553.happyshop.client.Main;
 import ci553.happyshop.storageAccess.DatabaseRW;
 import ci553.happyshop.orderManagement.OrderHub;
 import ci553.happyshop.utility.StorageLocation;
@@ -34,6 +35,12 @@ public class CustomerModel {
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
     protected RemoveProductNotifier notifier;
 
+    protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
+    protected String customerAdded = "src/main/resources/audio/CustomerItemAdded.wav";
+    protected String searchNull = "src/main/resources/audio/CustomerSearchNull.wav";
+    protected String searchResult = "src/main/resources/audio/CustomerSearchResult.wav";
+    protected String goodbye = "src/main/resources/audio/CustomerGoodbye.wav";
+
     //SELECT productID, description, image, unitPrice,inStock quantity
     void search() throws SQLException {
         String productId = cusView.tfId.getText().trim();
@@ -48,16 +55,21 @@ public class CustomerModel {
                 String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
                 displayLaSearchResult = baseInfo + quantityInfo;
                 System.out.println(displayLaSearchResult);
+                Main.mainHolder.PlaySound(searchResult);
             }
             else{
                 theProduct=null;
                 displayLaSearchResult = "No Product was found with ID " + productId;
                 System.out.println("No Product was found with ID " + productId);
+                Main.mainHolder.PlaySound(searchNull);
+                Main.mainHolder.StopSound();
             }
         }else{
             theProduct=null;
             displayLaSearchResult = "Please type ProductID";
             System.out.println("Please type ProductID.");
+            Main.mainHolder.PlaySound(searchNull);
+            Main.mainHolder.StopSound();
         }
         updateView();
     }
@@ -75,6 +87,8 @@ public class CustomerModel {
             // It also sorts out the trolley by ProductID.
             organisedTrolley();
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
+            Main.mainHolder.PlaySound(customerAdded);
+            Main.mainHolder.StopSound();
             System.out.println("Added to trolley");
         }
         else{
@@ -113,6 +127,9 @@ public class CustomerModel {
         Product pNew = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
        // trolley.add(theProduct); - Commented out due to duplication
         trolley.add(pNew);
+        /**
+         * Sorts out the trolley numerically by Product ID.
+         */
         Collections.sort(trolley, Comparator.comparing(Product::getProductId));
     }
 
@@ -141,6 +158,7 @@ public class CustomerModel {
                         ProductListFormatter.buildString(theOrder.getProductList())
                 );
                 System.out.println(displayTaReceipt);
+                Main.mainHolder.PlaySound(goodbye);
             }
 
             else
@@ -161,6 +179,8 @@ public class CustomerModel {
                 //You can use the provided RemoveProductNotifier class and its showRemovalMsg method for this purpose.
                 //remember close the message window where appropriate (using method closeNotifierWindow() of RemoveProductNotifier class)
                 displayLaSearchResult = "Checkout failed due to insufficient stock for the following products:\n" + errorMsg.toString();
+                String removalMsg = "";
+                notifier.showRemovalMsg(removalMsg);
                 System.out.println("The stock that you requested is not currently available. Please try again later.");
             }
         }
@@ -200,6 +220,8 @@ public class CustomerModel {
 
     void cancel(){
         trolley.clear();
+        Main.mainHolder.StopSound();
+        Main.mainHolder.PlaySound(cancelled);
         displayTaTrolley="";
         updateView();
     }

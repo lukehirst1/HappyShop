@@ -2,6 +2,7 @@ package ci553.happyshop.orderManagement;
 
 import ci553.happyshop.catalogue.Order;
 import ci553.happyshop.catalogue.Product;
+import ci553.happyshop.client.Main;
 import ci553.happyshop.client.orderTracker.OrderTracker;
 import ci553.happyshop.client.picker.PickerModel;
 import ci553.happyshop.storageAccess.OrderFileManager;
@@ -51,6 +52,8 @@ public class OrderHub  {
     private TreeMap<Integer,OrderState> OrderedOrderMap = new TreeMap<>();
     private TreeMap<Integer,OrderState> progressingOrderMap = new TreeMap<>();
 
+    protected String pickerAlert = "src/main/resources/audio/OrderPickerAlert.wav";
+
     /**
      * Two Lists to hold all registered OrderTracker and PickerModel observers.
      * These observers are notified whenever the orderMap is updated,
@@ -88,7 +91,9 @@ public class OrderHub  {
         orderMap.put(orderId, theOrder.getState()); //add the order to orderMap,state is Ordered initially
         notifyOrderTrackers(); //notify OrderTrackers
         notifyPickerModels();//notify pickers
-        
+
+        Main.mainHolder.PlaySound(pickerAlert);
+
         return theOrder;
     }
 

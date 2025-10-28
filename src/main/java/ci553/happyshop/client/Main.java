@@ -14,6 +14,11 @@ import ci553.happyshop.storageAccess.DatabaseRW;
 import ci553.happyshop.storageAccess.DatabaseRWFactory;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -33,7 +38,70 @@ import java.io.IOException;
  * @author  Shine Shan University of Brighton
  */
 
-public class Main extends Application {
+public class Main extends Application
+{
+    Clip accessibilityClips;
+    String currentState;
+    long currentFrame;
+
+    public static Main mainHolder = new Main();
+    protected String welcome = "src/main/resources/audio/CustomerGreetings.wav";
+
+
+    public void PlaySound(String location)
+    {
+        try
+        {
+            // Is the clip not empty and running?
+            if (accessibilityClips != null && accessibilityClips.isRunning())
+            {
+                StopSound();
+            }
+
+            File path = new File(location);
+
+            if (path.exists())
+            {
+                AudioInputStream audio = AudioSystem.getAudioInputStream(path);
+                accessibilityClips = AudioSystem.getClip();
+                accessibilityClips.open(audio);
+                accessibilityClips.start();
+
+                currentState = "Playing";
+            }
+            else
+            {
+                System.out.println("Can't find file");
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Stops the existing sound from running
+     */
+    public void StopSound()
+    {
+        try
+        {
+            // Is it not null or running?
+            if (accessibilityClips != null && accessibilityClips.isRunning())
+            {
+                currentFrame = 0L;
+                accessibilityClips.stop();
+                accessibilityClips.close();
+                currentState = "Stopped";
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+
 
     public static void main(String[] args) {
         launch(args); // Launches the JavaFX application and calls the @Override start()
@@ -49,6 +117,8 @@ public class Main extends Application {
         startCustomerClient();
         startPickerClient();
         startOrderTracker();
+
+        PlaySound(welcome);
 
         // Initializes the order map for the OrderHub. This must be called after starting the observer clients
         // (such as OrderTracker and Picker clients) to ensure they are properly registered for receiving updates.
