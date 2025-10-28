@@ -12,9 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Array;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TODO
@@ -105,6 +103,7 @@ public class CustomerModel {
                  * set the ordered quantity from p, and get the orderedQuantity from theProduct.
                  */
                 p.setOrderedQuantity(p.getOrderedQuantity() + theProduct.getOrderedQuantity());
+                Collections.sort(trolley, Comparator.comparing(theProduct::getProductId());
                 return;
             }
         }
