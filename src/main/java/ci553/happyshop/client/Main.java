@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -74,9 +75,9 @@ public class Main extends Application
                 System.out.println("Can't find file");
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            System.out.println(e);
+            ex.printStackTrace();
         }
     }
 
@@ -87,18 +88,14 @@ public class Main extends Application
     {
         try
         {
-            // Is it not null or running?
-            if (accessibilityClips != null && accessibilityClips.isRunning())
-            {
-                currentFrame = 0L;
-                accessibilityClips.stop();
-                accessibilityClips.close();
-                currentState = "Stopped";
-            }
+            currentFrame = accessibilityClips.getMicrosecondPosition();
+            accessibilityClips.stop();
+            accessibilityClips.close();
+            currentState = "Stopped";
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            System.out.println(e);
+            ex.printStackTrace();
         }
     }
 
@@ -118,7 +115,7 @@ public class Main extends Application
         startPickerClient();
         startOrderTracker();
 
-        PlaySound(welcome);
+        Main.mainHolder.PlaySound(welcome);
 
         // Initializes the order map for the OrderHub. This must be called after starting the observer clients
         // (such as OrderTracker and Picker clients) to ensure they are properly registered for receiving updates.

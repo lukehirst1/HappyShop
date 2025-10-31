@@ -35,6 +35,8 @@ public class CustomerModel {
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
     protected RemoveProductNotifier notifier;
 
+
+    // Holder for audio strings
     protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
     protected String customerAdded = "src/main/resources/audio/CustomerItemAdded.wav";
     protected String searchNull = "src/main/resources/audio/CustomerSearchNull.wav";
@@ -61,15 +63,15 @@ public class CustomerModel {
                 theProduct=null;
                 displayLaSearchResult = "No Product was found with ID " + productId;
                 System.out.println("No Product was found with ID " + productId);
-                Main.mainHolder.PlaySound(searchNull);
                 Main.mainHolder.StopSound();
+                Main.mainHolder.PlaySound(searchNull);
             }
         }else{
             theProduct=null;
             displayLaSearchResult = "Please type ProductID";
             System.out.println("Please type ProductID.");
-            Main.mainHolder.PlaySound(searchNull);
             Main.mainHolder.StopSound();
+            Main.mainHolder.PlaySound(searchNull);
         }
         updateView();
     }
@@ -87,8 +89,8 @@ public class CustomerModel {
             // It also sorts out the trolley by ProductID.
             organisedTrolley();
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
-            Main.mainHolder.PlaySound(customerAdded);
             Main.mainHolder.StopSound();
+            Main.mainHolder.PlaySound(customerAdded);
             System.out.println("Added to trolley");
         }
         else{
@@ -150,6 +152,7 @@ public class CustomerModel {
                 OrderHub orderHub =OrderHub.getOrderHub();
                 Order theOrder = orderHub.newOrder(trolley);
                 trolley.clear();
+                theProduct.setStockQuantity();
                 displayTaTrolley ="";
                 displayTaReceipt = String.format(
                         "Order_ID: %s\nOrdered_Date_Time: %s\n%s",

@@ -48,7 +48,7 @@ public class Product implements Comparable<Product> {
         this.orderedQuantity = orderedQuantity;
     }
 
-    public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity - orderedQuantity;}
+    public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity;}
 
     @Override
     public int compareTo(Product otherProduct) {
