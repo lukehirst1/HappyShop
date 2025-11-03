@@ -3,8 +3,12 @@ package ci553.happyshop.client.customer;
 import ci553.happyshop.catalogue.Order;
 import ci553.happyshop.catalogue.Product;
 import ci553.happyshop.client.Main;
+import ci553.happyshop.client.warehouse.WarehouseClient;
+import ci553.happyshop.client.warehouse.WarehouseModel;
 import ci553.happyshop.storageAccess.DatabaseRW;
 import ci553.happyshop.orderManagement.OrderHub;
+import ci553.happyshop.storageAccess.DatabaseRWFactory;
+import ci553.happyshop.storageAccess.DerbyRW;
 import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.ProductListFormatter;
 
@@ -35,7 +39,6 @@ public class CustomerModel {
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
     protected RemoveProductNotifier notifier;
 
-
     // Holder for audio strings
     protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
     protected String customerAdded = "src/main/resources/audio/CustomerItemAdded.wav";
@@ -48,25 +51,28 @@ public class CustomerModel {
         String productId = cusView.tfId.getText().trim();
         if(!productId.isEmpty()){
             theProduct = databaseRW.searchByProductId(productId); //search database
-            if(theProduct != null && theProduct.getStockQuantity()>0){
+            if(theProduct != null && theProduct.getStockQuantity()>0)
+            {
                 double unitPrice = theProduct.getUnitPrice();
                 String description = theProduct.getProductDescription();
                 int stock = theProduct.getStockQuantity();
-
                 String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", productId, description, unitPrice);
                 String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
                 displayLaSearchResult = baseInfo + quantityInfo;
                 System.out.println(displayLaSearchResult);
                 Main.mainHolder.PlaySound(searchResult);
             }
-            else{
+            else
+            {
                 theProduct=null;
                 displayLaSearchResult = "No Product was found with ID " + productId;
                 System.out.println("No Product was found with ID " + productId);
                 Main.mainHolder.StopSound();
                 Main.mainHolder.PlaySound(searchNull);
             }
-        }else{
+        }
+        else
+        {
             theProduct=null;
             displayLaSearchResult = "Please type ProductID";
             System.out.println("Please type ProductID.");
@@ -142,8 +148,10 @@ public class CustomerModel {
             // If any products are insufficient, the update will be rolled back.
             // If all products are sufficient, the database will be updated, and insufficientProducts will be empty.
             // Note: If the trolley is already organized (merged and sorted), grouping is unnecessary.
-            ArrayList<Product> groupedTrolley= groupProductsById(trolley);
-            ArrayList<Product> insufficientProducts= databaseRW.purchaseStocks(groupedTrolley);
+            // ArrayList<Product> groupedTrolley= groupProductsById(trolley);
+
+            // This reduces the product quantity down by how much has been purchased.
+            ArrayList<Product> insufficientProducts= databaseRW.purchaseStocks(trolley);
 
             if (insufficientProducts.isEmpty())
             {
@@ -152,7 +160,6 @@ public class CustomerModel {
                 OrderHub orderHub =OrderHub.getOrderHub();
                 Order theOrder = orderHub.newOrder(trolley);
                 trolley.clear();
-                theProduct.setStockQuantity();
                 displayTaTrolley ="";
                 displayTaReceipt = String.format(
                         "Order_ID: %s\nOrdered_Date_Time: %s\n%s",

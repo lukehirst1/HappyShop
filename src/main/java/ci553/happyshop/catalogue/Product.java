@@ -43,12 +43,11 @@ public class Product implements Comparable<Product> {
     public int getOrderedQuantity() { return orderedQuantity;}
     public int getStockQuantity() { return stockQuantity;}
 
-    //a setter method
+    //a pair of setter methods
     public void setOrderedQuantity(int orderedQuantity) {
         this.orderedQuantity = orderedQuantity;
     }
-
-    public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity;}
+    public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity; }
 
     @Override
     public int compareTo(Product otherProduct) {

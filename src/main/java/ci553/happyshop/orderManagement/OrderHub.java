@@ -91,7 +91,6 @@ public class OrderHub  {
         orderMap.put(orderId, theOrder.getState()); //add the order to orderMap,state is Ordered initially
         notifyOrderTrackers(); //notify OrderTrackers
         notifyPickerModels();//notify pickers
-
         Main.mainHolder.PlaySound(pickerAlert);
 
         return theOrder;
