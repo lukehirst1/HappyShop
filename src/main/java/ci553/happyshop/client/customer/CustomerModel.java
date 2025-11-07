@@ -37,7 +37,6 @@ public class CustomerModel {
     private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
-    protected RemoveProductNotifier notifier;
 
     // Holder for audio strings
     protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
@@ -67,6 +66,13 @@ public class CustomerModel {
                 displayLaSearchResult = baseInfo + quantityInfo;
                 System.out.println(displayLaSearchResult);
                 Main.mainHolder.PlaySound(searchResult);
+            }
+
+            if (theProduct != null && theProduct.getStockQuantity() <= 15)
+            {
+                String removalMsg = "This item is currently low on stock. Are you sure you wish to add this?";
+
+                System.out.println("The stock that you requested is currently low.");
             }
             else
             {
@@ -193,14 +199,6 @@ public class CustomerModel {
                 //You can use the provided RemoveProductNotifier class and its showRemovalMsg method for this purpose.
                 //remember close the message window where appropriate (using method closeNotifierWindow() of RemoveProductNotifier class)
                 displayLaSearchResult = "Checkout failed due to insufficient stock for the following products:\n" + errorMsg.toString();
-
-                // Warn the user of low stock.
-                if ()
-                {
-                    String removalMsg = "";
-                    notifier.showRemovalMsg(removalMsg);
-                    System.out.println("The stock that you requested is not currently available. Please try again later.");
-                }
             }
         }
 
