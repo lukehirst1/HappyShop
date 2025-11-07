@@ -47,6 +47,12 @@ public class CustomerModel {
     protected String goodbye = "src/main/resources/audio/CustomerGoodbye.wav";
 
     //SELECT productID, description, image, unitPrice,inStock quantity
+
+    /**
+     * Utilises SQL to search for a ProductID. If a Product is found, it is then shown in the search result.
+     * However, if the product is not found, then the window displays an error.
+     * @throws SQLException
+     */
     void search() throws SQLException {
         String productId = cusView.tfId.getText().trim();
         if(!productId.isEmpty()){
@@ -82,6 +88,10 @@ public class CustomerModel {
         updateView();
     }
 
+    /**
+     * Adds the selected product to a trolley. If it does not exist, it asks the user to search for a product that
+     * exists, before it continues. The method also organises the trolley by Product ID.
+     */
     void addToTrolley(){
         if(theProduct!= null){
 
@@ -116,28 +126,22 @@ public class CustomerModel {
         // Each product in a trolley
         for(Product p : trolley)
         {
-            /**
-             * Is the productID from p equal to theProduct ID?
-             */
+            // is the getProductID() from p equal to getProductID() from theProduct?
             if (p.getProductId().equals(theProduct.getProductId()))
             {
-                /**
-                 * set the ordered quantity from p, and get the orderedQuantity from theProduct.
-                 */
+                // set the ordered quantity from p, and get the orderedQuantity from theProduct.
                 p.setOrderedQuantity(p.getOrderedQuantity() + theProduct.getOrderedQuantity());
                 return;
             }
         }
-        /**
+        /*
          * This will cause the trolley price to double each time, which is
          * very incorrect. The revised code is down below.
          */
         Product pNew = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
        // trolley.add(theProduct); - Commented out due to duplication
         trolley.add(pNew);
-        /**
-         * Sorts out the trolley numerically by Product ID.
-         */
+        // Sorts out the trolley numerically by Product ID.
         Collections.sort(trolley, Comparator.comparing(Product::getProductId));
     }
 
@@ -189,9 +193,14 @@ public class CustomerModel {
                 //You can use the provided RemoveProductNotifier class and its showRemovalMsg method for this purpose.
                 //remember close the message window where appropriate (using method closeNotifierWindow() of RemoveProductNotifier class)
                 displayLaSearchResult = "Checkout failed due to insufficient stock for the following products:\n" + errorMsg.toString();
-                String removalMsg = "";
-                notifier.showRemovalMsg(removalMsg);
-                System.out.println("The stock that you requested is not currently available. Please try again later.");
+
+                // Warn the user of low stock.
+                if ()
+                {
+                    String removalMsg = "";
+                    notifier.showRemovalMsg(removalMsg);
+                    System.out.println("The stock that you requested is not currently available. Please try again later.");
+                }
             }
         }
 
