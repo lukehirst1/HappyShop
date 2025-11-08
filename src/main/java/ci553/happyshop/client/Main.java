@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -219,9 +218,15 @@ public class Main extends Application
         alertSimulator.warehouseView = view;
     }
 
-    //starts the EmergencyExit GUI, - used to close the entire application immediatelly
+    //starts the EmergencyExit GUI, - used to close the entire application immediately
     private void startEmergencyExit(){
         EmergencyExit.getEmergencyExit();
+    }
+
+    public static void startLowStockWarn(Stage warn)
+    {
+        LowStockWarning warning = new LowStockWarning();
+        warning.start(warn);
     }
 }
 

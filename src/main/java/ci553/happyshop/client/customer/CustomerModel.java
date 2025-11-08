@@ -11,6 +11,7 @@ import ci553.happyshop.storageAccess.DatabaseRWFactory;
 import ci553.happyshop.storageAccess.DerbyRW;
 import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.ProductListFormatter;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -38,12 +39,17 @@ public class CustomerModel {
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
 
+    public LowStockWarning showWarning;
+    protected boolean stockEmpty = false;
+
     // Holder for audio strings
     protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
     protected String customerAdded = "src/main/resources/audio/CustomerItemAdded.wav";
     protected String searchNull = "src/main/resources/audio/CustomerSearchNull.wav";
     protected String searchResult = "src/main/resources/audio/CustomerSearchResult.wav";
     protected String goodbye = "src/main/resources/audio/CustomerGoodbye.wav";
+    protected String customerWarn = "src/main/resources/audio/CustomerStockWarning.wav";
+    protected String customerEmpty = "src/main/resources/audio/CustomerStockNotAvailable.wav";
 
     //SELECT productID, description, image, unitPrice,inStock quantity
 
@@ -58,6 +64,7 @@ public class CustomerModel {
             theProduct = databaseRW.searchByProductId(productId); //search database
             if(theProduct != null && theProduct.getStockQuantity()>0)
             {
+                lowStockCheck();
                 double unitPrice = theProduct.getUnitPrice();
                 String description = theProduct.getProductDescription();
                 int stock = theProduct.getStockQuantity();
@@ -66,13 +73,6 @@ public class CustomerModel {
                 displayLaSearchResult = baseInfo + quantityInfo;
                 System.out.println(displayLaSearchResult);
                 Main.mainHolder.PlaySound(searchResult);
-            }
-
-            if (theProduct != null && theProduct.getStockQuantity() <= 15)
-            {
-                String removalMsg = "This item is currently low on stock. Are you sure you wish to add this?";
-
-                System.out.println("The stock that you requested is currently low.");
             }
             else
             {
@@ -94,12 +94,31 @@ public class CustomerModel {
         updateView();
     }
 
+    void lowStockCheck()
+    {
+        if (theProduct.getStockQuantity() <= 15 && theProduct.getStockQuantity() > 0)
+        {
+            System.out.println("The stock that you requested is currently low.");
+            Main.mainHolder.PlaySound(customerWarn);
+            Main.mainHolder.StopSound();
+            Main.mainHolder.startLowStockWarn(new Stage());
+        }
+        else if (theProduct.getStockQuantity() < 0)
+        {
+            Main.mainHolder.PlaySound(customerEmpty);
+            Main.mainHolder.StopSound();
+            System.out.println("We're sorry, but the requested stock is not available.");
+            stockEmpty = true;
+        }
+    }
+
     /**
      * Adds the selected product to a trolley. If it does not exist, it asks the user to search for a product that
      * exists, before it continues. The method also organises the trolley by Product ID.
      */
     void addToTrolley(){
-        if(theProduct!= null){
+        if(theProduct!= null && !stockEmpty)
+        {
 
             // trolley.add(theProduct) — Product is appended to the end of the trolley.
             // To keep the trolley organized, add code here or call a method that:
@@ -115,7 +134,12 @@ public class CustomerModel {
             Main.mainHolder.PlaySound(customerAdded);
             System.out.println("Added to trolley");
         }
-        else{
+        else if (stockEmpty)
+        {
+            System.out.println("This item cannot be added due to no available stock.");
+        }
+        else
+        {
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";
             System.out.println("must search and get an available product before add to trolley");
         }
@@ -202,11 +226,12 @@ public class CustomerModel {
             }
         }
 
-        if (theProduct.getStockQuantity() < theProduct.getOrderedQuantity())
-        {
-            // Throw a error
-            System.out.println("Sorry, that stock is not available at the moment.. Please try again later.");
-        }
+        // Commented out in favour of another method in search().
+//        if (theProduct.getStockQuantity() < theProduct.getOrderedQuantity())
+//        {
+//            // Throw a error
+//            System.out.println("Sorry, that stock is not available at the moment.. Please try again later.");
+//        }
 
         else{
             displayTaTrolley = "Your trolley is empty";
