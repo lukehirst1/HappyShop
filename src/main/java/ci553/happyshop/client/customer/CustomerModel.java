@@ -28,10 +28,10 @@ import java.util.*;
 public class CustomerModel {
     public CustomerView cusView;
     public DatabaseRW databaseRW; //Interface type, not specific implementation
-                                  //Benefits: Flexibility: Easily change the database implementation.
+    //Benefits: Flexibility: Easily change the database implementation.
 
-    private Product theProduct =null; // product found from search
-    private ArrayList<Product> trolley =  new ArrayList<>(); // a list of products in trolley
+    private Product theProduct = null; // product found from search
+    private ArrayList<Product> trolley = new ArrayList<>(); // a list of products in trolley
 
     // Four UI elements to be passed to CustomerView for display updates.
     private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
@@ -40,7 +40,9 @@ public class CustomerModel {
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
 
     public LowStockWarning showWarning;
+    public RemoveProductNotifier removal;
     protected boolean stockEmpty = false;
+    protected boolean searchOption = false;
 
     // Holder for audio strings
     protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
@@ -51,19 +53,24 @@ public class CustomerModel {
     protected String customerWarn = "src/main/resources/audio/CustomerStockWarning.wav";
     protected String customerEmpty = "src/main/resources/audio/CustomerStockNotAvailable.wav";
 
-    //SELECT productID, description, image, unitPrice,inStock quantity
+    //SELECT productID, productName, description, image, unitPrice,inStock quantity
 
     /**
      * Utilises SQL to search for a ProductID. If a Product is found, it is then shown in the search result.
      * However, if the product is not found, then the window displays an error.
+     *
      * @throws SQLException
      */
     void search() throws SQLException {
         String productId = cusView.tfId.getText().trim();
-        if(!productId.isEmpty()){
+        String productName = cusView.tfName.getText().trim();
+
+        if (!productId.isEmpty() || !productName.equals(""))
+        {
             theProduct = databaseRW.searchByProductId(productId); //search database
-            if(theProduct != null && theProduct.getStockQuantity()>0)
-            {
+            trolley = databaseRW.searchProduct(productName); // Search the database using the name
+
+            if (theProduct != null && theProduct.getStockQuantity() > 0) {
                 lowStockCheck();
                 double unitPrice = theProduct.getUnitPrice();
                 String description = theProduct.getProductDescription();
@@ -76,9 +83,13 @@ public class CustomerModel {
             }
             else
             {
-                theProduct=null;
+                theProduct = null;
                 displayLaSearchResult = "No Product was found with ID " + productId;
                 System.out.println("No Product was found with ID " + productId);
+                displayLaSearchResult = "No Product was found with " + productName;
+                System.out.println("No Product was found with " + productName);
+                Main.mainHolder.StopSound();
+                Main.mainHolder.PlaySound(searchNull);
                 Main.mainHolder.StopSound();
                 Main.mainHolder.PlaySound(searchNull);
             }
@@ -86,8 +97,8 @@ public class CustomerModel {
         else
         {
             theProduct=null;
-            displayLaSearchResult = "Please type ProductID";
-            System.out.println("Please type ProductID.");
+            displayLaSearchResult = "Please type either the ProductID or ProductName";
+            System.out.println("Please type the ProductID or ProductName.");
             Main.mainHolder.StopSound();
             Main.mainHolder.PlaySound(searchNull);
         }
@@ -101,7 +112,7 @@ public class CustomerModel {
             System.out.println("The stock that you requested is currently low.");
             Main.mainHolder.PlaySound(customerWarn);
             Main.mainHolder.StopSound();
-            Main.mainHolder.startLowStockWarn(new Stage());
+            Main.startLowStockWarn(new Stage());
         }
         else if (theProduct.getStockQuantity() < 0)
         {
@@ -109,6 +120,25 @@ public class CustomerModel {
             Main.mainHolder.StopSound();
             System.out.println("We're sorry, but the requested stock is not available.");
             stockEmpty = true;
+        }
+    }
+
+    /**
+     * Checks if the requested product is in stock or not. If not, it removes the item from the cart.
+     */
+    void stockCheck()
+    {
+        // Uses a for loop to cycle through the trolley.
+        for (Product pCheck : trolley)
+        {
+            Product pChecker = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
+            // Too many items for the stock, so remove it from the cart.
+            if (pChecker.getProductId().equals(theProduct.getProductId()) && pChecker.getStockQuantity() > pChecker.getStockQuantity())
+            {
+                System.out.println("Sorry, but that item is not available, so it has to be removed from the cart.");
+                removal.showRemovalMsg("This item will have to be removed from the cart.");
+                trolley.remove(pCheck);
+            }
         }
     }
 
@@ -133,10 +163,6 @@ public class CustomerModel {
             Main.mainHolder.StopSound();
             Main.mainHolder.PlaySound(customerAdded);
             System.out.println("Added to trolley");
-        }
-        else if (stockEmpty)
-        {
-            System.out.println("This item cannot be added due to no available stock.");
         }
         else
         {
@@ -222,6 +248,7 @@ public class CustomerModel {
                 // 2. Trigger a message window to notify the customer about the insufficient stock, rather than directly changing displayLaSearchResult.
                 //You can use the provided RemoveProductNotifier class and its showRemovalMsg method for this purpose.
                 //remember close the message window where appropriate (using method closeNotifierWindow() of RemoveProductNotifier class)
+                stockCheck();
                 displayLaSearchResult = "Checkout failed due to insufficient stock for the following products:\n" + errorMsg.toString();
             }
         }

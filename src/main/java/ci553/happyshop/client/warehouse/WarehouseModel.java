@@ -65,7 +65,8 @@ public class WarehouseModel {
         if (!keyword.equals("")) {
             productList = databaseRW.searchProduct(keyword);
         }
-        else{
+        else
+        {
             productList.clear();
             System.out.println("please type product ID or name to search");
         }

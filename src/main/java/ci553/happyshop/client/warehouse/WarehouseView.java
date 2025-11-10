@@ -127,7 +127,7 @@ public class WarehouseView  {
     TextField tfStockNewPro;
     TextArea taDescriptionNewPro;
     private ImageView ivProNewPro;
-    String imageUriNewPro; //user slected image Uri
+    String imageUriNewPro; //user selected image URL
     // URI of the image selected by the user for a new product. This value is retrieved from the image chooser.
 
     public void start(Stage window) {

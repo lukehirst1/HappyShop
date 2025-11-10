@@ -37,7 +37,7 @@ public class CustomerView  {
     private VBox vbTrolleyPage;  //vbTrolleyPage and vbReceiptPage will swap with each other when need
     private VBox vbReceiptPage;
 
-    TextField tfId; //for user input on the search page. Made accessible so it can be accessed or modified by CustomerModel
+    TextField tfId; //for user input on the search page. Made accessible, so it can be accessed or modified by CustomerModel
     TextField tfName; //for user input on the search page. Made accessible so it can be accessed by CustomerModel
 
     //four controllers needs updating when program going on
@@ -89,7 +89,7 @@ public class CustomerView  {
         Label laName = new Label("Name:");
         laName.setStyle(UIStyle.labelStyle);
         tfName = new TextField();
-        tfName.setPromptText("implement it if you want");
+        tfName.setPromptText("eg. TV    ");
         tfName.setStyle(UIStyle.textFiledStyle);
         HBox hbName = new HBox(10, laName, tfName);
 
