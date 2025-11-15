@@ -19,7 +19,7 @@ public class WarehouseModel {
     public DatabaseRW databaseRW; //Interface type, not specific implementation
                          //Benefits: Flexibility: Easily change the database implementation.
 
-    private ArrayList<Product> productList = new ArrayList<>(); // search results fetched from the database
+    public ArrayList<Product> productList = new ArrayList<>(); // search results fetched from the database
     private Product theSelectedPro; // the product selected from the ListView before the user edits or deletes
     private String theNewProId;
 

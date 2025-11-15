@@ -31,6 +31,7 @@ public class CustomerModel {
     //Benefits: Flexibility: Easily change the database implementation.
 
     private Product theProduct = null; // product found from search
+    public ArrayList<Product> productList = new ArrayList<>();
     private ArrayList<Product> trolley = new ArrayList<>(); // a list of products in trolley
 
     // Four UI elements to be passed to CustomerView for display updates.
@@ -62,20 +63,22 @@ public class CustomerModel {
      * @throws SQLException
      */
     void search() throws SQLException {
-        String productId = cusView.tfId.getText().trim();
-        String productName = cusView.tfName.getText().trim();
+//        String productId = cusView.tfId.getText().trim();
+//        String productName = cusView.tfName.getText().trim();
 
-        if (!productId.isEmpty() || !productName.equals(""))
+        String keyword = cusView.tfUnified.getText().trim();
+        if (!keyword.equals(""))
         {
-            theProduct = databaseRW.searchByProductId(productId); //search database
-            trolley = databaseRW.searchProduct(productName); // Search the database using the name
+           // theProduct = databaseRW.searchByProductId(productId); //search database
+           // trolley = databaseRW.searchProduct(productName); // Search the database using the name
+            productList = databaseRW.searchProduct(keyword); // Search the database using the name of the product.
 
             if (theProduct != null && theProduct.getStockQuantity() > 0) {
                 lowStockCheck();
                 double unitPrice = theProduct.getUnitPrice();
                 String description = theProduct.getProductDescription();
                 int stock = theProduct.getStockQuantity();
-                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", productId, description, unitPrice);
+                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", keyword, description, unitPrice);
                 String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
                 displayLaSearchResult = baseInfo + quantityInfo;
                 System.out.println(displayLaSearchResult);
@@ -84,14 +87,15 @@ public class CustomerModel {
             else
             {
                 theProduct = null;
-                displayLaSearchResult = "No Product was found with ID " + productId;
-                System.out.println("No Product was found with ID " + productId);
-                displayLaSearchResult = "No Product was found with " + productName;
-                System.out.println("No Product was found with " + productName);
+//                displayLaSearchResult = "No Product was found with ID " + productId;
+//                System.out.println("No Product was found with ID " + productId);
+//                displayLaSearchResult = "No Product was found with " + productName;
+//                System.out.println("No Product was found with " + productName);
+                displayLaSearchResult = "No product was found with the ID or Name of " + keyword;
+                System.out.println("Failed to find product");
                 Main.mainHolder.StopSound();
                 Main.mainHolder.PlaySound(searchNull);
-                Main.mainHolder.StopSound();
-                Main.mainHolder.PlaySound(searchNull);
+                productList.clear();
             }
         }
         else
@@ -101,6 +105,7 @@ public class CustomerModel {
             System.out.println("Please type the ProductID or ProductName.");
             Main.mainHolder.StopSound();
             Main.mainHolder.PlaySound(searchNull);
+            productList.clear();
         }
         updateView();
     }
@@ -133,12 +138,6 @@ public class CustomerModel {
         {
             Product pChecker = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
             // Too many items for the stock, so remove it from the cart.
-            if (pChecker.getProductId().equals(theProduct.getProductId()) && pChecker.getStockQuantity() > pChecker.getStockQuantity())
-            {
-                System.out.println("Sorry, but that item is not available, so it has to be removed from the cart.");
-                removal.showRemovalMsg("This item will have to be removed from the cart.");
-                trolley.remove(pCheck);
-            }
         }
     }
 
@@ -299,7 +298,8 @@ public class CustomerModel {
     }
 
     void updateView() {
-        if(theProduct != null){
+        if(theProduct != null)
+        {
             imageName = theProduct.getProductImageName();
             String relativeImageUrl = StorageLocation.imageFolder +imageName; //relative file path, eg images/0001.jpg
             // Get the full absolute path to the image

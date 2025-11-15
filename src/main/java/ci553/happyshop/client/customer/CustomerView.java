@@ -1,8 +1,10 @@
 package ci553.happyshop.client.customer;
 
+import ci553.happyshop.catalogue.Product;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
 import ci553.happyshop.utility.WindowBounds;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * The CustomerView is separated into two sections by a line :
@@ -39,6 +42,8 @@ public class CustomerView  {
 
     TextField tfId; //for user input on the search page. Made accessible, so it can be accessed or modified by CustomerModel
     TextField tfName; //for user input on the search page. Made accessible so it can be accessed by CustomerModel
+
+    TextField tfUnified; // For a simpler system of searching for the product name or identification
 
     //four controllers needs updating when program going on
     private ImageView ivProduct; //image area in searchPage
@@ -79,6 +84,8 @@ public class CustomerView  {
         Label laPageTitle = new Label("Search by Product ID/Name");
         laPageTitle.setStyle(UIStyle.labelTitleStyle);
 
+        // Below code has been commented out for a simplified search system.
+/*
         Label laId = new Label("ID:      ");
         laId.setStyle(UIStyle.labelStyle);
         tfId = new TextField();
@@ -92,6 +99,14 @@ public class CustomerView  {
         tfName.setPromptText("eg. TV    ");
         tfName.setStyle(UIStyle.textFiledStyle);
         HBox hbName = new HBox(10, laName, tfName);
+ */
+
+        Label laUnified = new Label("Name / ID:");
+        laUnified.setStyle(UIStyle.labelStyle);
+        tfUnified = new TextField();
+        tfUnified.setPromptText("eg. 0001 or DAB Radio");
+        tfUnified.setStyle(UIStyle.textFiledStyle);
+        HBox hbUnified = new HBox(10, laUnified, tfUnified);
 
         Label laPlaceHolder = new Label(  " ".repeat(15)); //create left-side spacing so that this HBox aligns with others in the layout.
         Button btnSearch = new Button("Search");
@@ -115,7 +130,7 @@ public class CustomerView  {
         HBox hbSearchResult = new HBox(5, ivProduct, lbProductInfo);
         hbSearchResult.setAlignment(Pos.CENTER_LEFT);
 
-        VBox vbSearchPage = new VBox(15, laPageTitle, hbId, hbName, hbBtns, hbSearchResult);
+        VBox vbSearchPage = new VBox(15, laPageTitle, hbUnified, hbBtns, hbSearchResult);
         vbSearchPage.setPrefWidth(COLUMN_WIDTH);
         vbSearchPage.setAlignment(Pos.TOP_CENTER);
         vbSearchPage.setStyle("-fx-padding: 15px;");
