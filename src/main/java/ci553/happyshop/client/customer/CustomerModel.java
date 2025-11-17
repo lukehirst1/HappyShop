@@ -5,6 +5,7 @@ import ci553.happyshop.catalogue.Product;
 import ci553.happyshop.client.Main;
 import ci553.happyshop.client.warehouse.WarehouseClient;
 import ci553.happyshop.client.warehouse.WarehouseModel;
+import ci553.happyshop.customException.ExcessiveOrderQuantityException;
 import ci553.happyshop.storageAccess.DatabaseRW;
 import ci553.happyshop.orderManagement.OrderHub;
 import ci553.happyshop.storageAccess.DatabaseRWFactory;
@@ -33,6 +34,7 @@ public class CustomerModel {
     private Product theProduct = null; // product found from search
     public ArrayList<Product> productList = new ArrayList<>();
     private ArrayList<Product> trolley = new ArrayList<>(); // a list of products in trolley
+    protected ArrayList<Product> insufficientProducts = new ArrayList<>();
 
     // Four UI elements to be passed to CustomerView for display updates.
     private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
@@ -42,8 +44,10 @@ public class CustomerModel {
 
     public LowStockWarning showWarning;
     public RemoveProductNotifier removal;
+
     protected boolean stockEmpty = false;
     protected boolean searchOption = false;
+    protected boolean exceededQuantity = false;
 
     // Holder for audio strings
     protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
@@ -67,13 +71,15 @@ public class CustomerModel {
 //        String productName = cusView.tfName.getText().trim();
 
         String keyword = cusView.tfUnified.getText().trim();
-        if (!keyword.equals(""))
+
+        if (!keyword.isEmpty())
         {
-           // theProduct = databaseRW.searchByProductId(productId); //search database
+//            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
             productList = databaseRW.searchProduct(keyword); // Search the database using the name of the product.
 
-            if (theProduct != null && theProduct.getStockQuantity() > 0) {
+            if (theProduct != null && theProduct.getStockQuantity() > 0)
+            {
                 lowStockCheck();
                 double unitPrice = theProduct.getUnitPrice();
                 String description = theProduct.getProductDescription();
@@ -110,6 +116,9 @@ public class CustomerModel {
         updateView();
     }
 
+    /**
+     * Is the current stock low, or not available?
+     */
     void lowStockCheck()
     {
         if (theProduct.getStockQuantity() <= 15 && theProduct.getStockQuantity() > 0)
@@ -131,15 +140,15 @@ public class CustomerModel {
     /**
      * Checks if the requested product is in stock or not. If not, it removes the item from the cart.
      */
-    void stockCheck()
-    {
-        // Uses a for loop to cycle through the trolley.
-        for (Product pCheck : trolley)
-        {
-            Product pChecker = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
-            // Too many items for the stock, so remove it from the cart.
-        }
-    }
+//    void stockCheck()
+//    {
+//        // Uses a for loop to cycle through the trolley.
+//        for (Product pCheck : trolley)
+//        {
+//            Product pChecker = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
+//            // Too many items for the stock, so remove it from the cart.
+//        }
+//    }
 
     /**
      * Adds the selected product to a trolley. If it does not exist, it asks the user to search for a product that
@@ -148,7 +157,6 @@ public class CustomerModel {
     void addToTrolley(){
         if(theProduct!= null && !stockEmpty)
         {
-
             // trolley.add(theProduct) — Product is appended to the end of the trolley.
             // To keep the trolley organized, add code here or call a method that:
             //TODO
@@ -200,7 +208,26 @@ public class CustomerModel {
         Collections.sort(trolley, Comparator.comparing(Product::getProductId));
     }
 
-    void checkOut() throws IOException, SQLException {
+    void validateTrolley()
+    {
+            for(Product p : trolley) {
+                int i = p.getOrderedQuantity() + theProduct.getOrderedQuantity();
+                if (i > 50)
+                    try
+                    {
+                        exceededQuantity = true;
+                        throw new ExcessiveOrderQuantityException("Sorry, it appears that item is above the allowed limit.");
+                    }
+                catch (ExcessiveOrderQuantityException EOQE)
+                {
+                    System.out.println(EOQE.getMessage());
+            }
+        }
+    }
+
+
+    void checkOut() throws IOException, SQLException
+    {
         if(!trolley.isEmpty()){
             // Group the products in the trolley by productId to optimize stock checking
             // Check the database for sufficient stock for all products in the trolley.
@@ -209,27 +236,34 @@ public class CustomerModel {
             // Note: If the trolley is already organized (merged and sorted), grouping is unnecessary.
             // ArrayList<Product> groupedTrolley= groupProductsById(trolley);
 
-            // This reduces the product quantity down by how much has been purchased.
-            ArrayList<Product> insufficientProducts= databaseRW.purchaseStocks(trolley);
+            // The first thing to do is to check if the trolley has the right amount of products.
+            validateTrolley();
 
-            if (insufficientProducts.isEmpty())
+            // Next: Is the quantity of the product NOT more than 50?
+            if (!exceededQuantity)
             {
-                // If stock is sufficient for all products
-                //get OrderHub and tell it to make a new Order
-                OrderHub orderHub =OrderHub.getOrderHub();
-                Order theOrder = orderHub.newOrder(trolley);
-                trolley.clear();
-                displayTaTrolley ="";
-                displayTaReceipt = String.format(
-                        "Order_ID: %s\nOrdered_Date_Time: %s\n%s",
-                        theOrder.getOrderId(),
-                        theOrder.getOrderedDateTime(),
-                        ProductListFormatter.buildString(theOrder.getProductList())
-                );
-                System.out.println(displayTaReceipt);
-                Main.mainHolder.PlaySound(goodbye);
-            }
+                // This reduces the product quantity down by how much has been purchased.
+                insufficientProducts = databaseRW.purchaseStocks(trolley);
 
+                // Is it possible to buy the products?
+                if (insufficientProducts.isEmpty() && theProduct.getOrderedQuantity() <= 50)
+                {
+                    // If stock is sufficient for all products
+                    //get OrderHub and tell it to make a new Order
+                    OrderHub orderHub =OrderHub.getOrderHub();
+                    Order theOrder = orderHub.newOrder(trolley);
+                    trolley.clear();
+                    displayTaTrolley ="";
+                    displayTaReceipt = String.format(
+                            "Order_ID: %s\nOrdered_Date_Time: %s\n%s",
+                            theOrder.getOrderId(),
+                            theOrder.getOrderedDateTime(),
+                            ProductListFormatter.buildString(theOrder.getProductList())
+                    );
+                    System.out.println(displayTaReceipt);
+                    Main.mainHolder.PlaySound(goodbye);
+                }
+            }
             else
             { // Some products have insufficient stock — build an error message to inform the customer
                 StringBuilder errorMsg = new StringBuilder();
@@ -247,7 +281,7 @@ public class CustomerModel {
                 // 2. Trigger a message window to notify the customer about the insufficient stock, rather than directly changing displayLaSearchResult.
                 //You can use the provided RemoveProductNotifier class and its showRemovalMsg method for this purpose.
                 //remember close the message window where appropriate (using method closeNotifierWindow() of RemoveProductNotifier class)
-                stockCheck();
+//                stockCheck();
                 displayLaSearchResult = "Checkout failed due to insufficient stock for the following products:\n" + errorMsg.toString();
             }
         }
@@ -259,7 +293,8 @@ public class CustomerModel {
 //            System.out.println("Sorry, that stock is not available at the moment.. Please try again later.");
 //        }
 
-        else{
+        else
+        {
             displayTaTrolley = "Your trolley is empty";
             System.out.println("Your trolley is empty");
         }

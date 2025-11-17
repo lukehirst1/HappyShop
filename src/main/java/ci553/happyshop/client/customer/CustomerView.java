@@ -1,9 +1,11 @@
 package ci553.happyshop.client.customer;
 
 import ci553.happyshop.catalogue.Product;
+import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
 import ci553.happyshop.utility.WindowBounds;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -20,6 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The CustomerView is separated into two sections by a line :
@@ -50,6 +53,8 @@ public class CustomerView  {
     private Label lbProductInfo;//product text info in searchPage
     private TextArea taTrolley; //in trolley Page
     private TextArea taReceipt;//in receipt page
+
+    private Label laUnified;
 
     // Holds a reference to this CustomerView window for future access and management
     // (e.g., positioning the removeProductNotifier when needed).
@@ -101,7 +106,7 @@ public class CustomerView  {
         HBox hbName = new HBox(10, laName, tfName);
  */
 
-        Label laUnified = new Label("Name / ID:");
+        laUnified = new Label("Name / ID:");
         laUnified.setStyle(UIStyle.labelStyle);
         tfUnified = new TextField();
         tfUnified.setPromptText("eg. 0001 or DAB Radio");
