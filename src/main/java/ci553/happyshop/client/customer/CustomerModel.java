@@ -32,7 +32,7 @@ public class CustomerModel {
     //Benefits: Flexibility: Easily change the database implementation.
 
     private Product theProduct = null; // product found from search
-    public ArrayList<Product> productList = new ArrayList<>();
+    private ArrayList<Product> productList = new ArrayList<>();
     private ArrayList<Product> trolley = new ArrayList<>(); // a list of products in trolley
     protected ArrayList<Product> insufficientProducts = new ArrayList<>();
 
@@ -72,11 +72,24 @@ public class CustomerModel {
 
         String keyword = cusView.tfUnified.getText().trim();
 
+        // First: Is the keyword NOT empty?
         if (!keyword.isEmpty())
         {
 //            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
-            productList = databaseRW.searchProduct(keyword); // Search the database using the name of the product.
+            productList = databaseRW.searchProduct(keyword); // Search the database using the name or ID of the product.
+
+            // Is the new productList NOT empty - i.e. Does it have something inside of it?
+            if (!productList.isEmpty())
+            {
+                // Assign theProduct to productList
+                theProduct = productList.getFirst();
+            }
+            else
+            {
+                // List is empty - theProduct is null.
+                theProduct = null;
+            }
 
             if (theProduct != null && theProduct.getStockQuantity() > 0)
             {
@@ -346,6 +359,7 @@ public class CustomerModel {
             imageName = "imageHolder.jpg";
         }
         cusView.update(imageName, displayLaSearchResult, displayTaTrolley,displayTaReceipt);
+        cusView.updateMulti(productList);
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.

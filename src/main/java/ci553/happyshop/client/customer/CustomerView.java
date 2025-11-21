@@ -20,6 +20,8 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,9 @@ public class CustomerView  {
     private Label lbProductInfo;//product text info in searchPage
     private TextArea taTrolley; //in trolley Page
     private TextArea taReceipt;//in receipt page
+
+    private ObservableList<Product> obeProductList; //observable product list
+    ListView<Product> obrLvProducts; //A ListView observes the product list
 
     private Label laUnified;
 
@@ -113,6 +118,12 @@ public class CustomerView  {
         tfUnified.setStyle(UIStyle.textFiledStyle);
         HBox hbUnified = new HBox(10, laUnified, tfUnified);
 
+        obeProductList = FXCollections.observableArrayList();
+        obrLvProducts = new ListView<>(obeProductList);//ListView proListView observes proList
+        obrLvProducts.setPrefHeight(HEIGHT - 100);
+        obrLvProducts.setFixedCellSize(50);
+        obrLvProducts.setStyle(UIStyle.listViewStyle);
+
         Label laPlaceHolder = new Label(  " ".repeat(15)); //create left-side spacing so that this HBox aligns with others in the layout.
         Button btnSearch = new Button("Search");
         btnSearch.setStyle(UIStyle.buttonStyle);
@@ -120,7 +131,7 @@ public class CustomerView  {
         Button btnAddToTrolley = new Button("Add to Trolley");
         btnAddToTrolley.setStyle(UIStyle.buttonStyle);
         btnAddToTrolley.setOnAction(this::buttonClicked);
-        HBox hbBtns = new HBox(10, laPlaceHolder,btnSearch, btnAddToTrolley);
+        HBox hbBtns = new HBox(10, laPlaceHolder,btnSearch, btnAddToTrolley, obrLvProducts);
 
         ivProduct = new ImageView("imageHolder.jpg");
         ivProduct.setFitHeight(60);
@@ -134,6 +145,36 @@ public class CustomerView  {
         lbProductInfo.setStyle(UIStyle.labelMulLineStyle);
         HBox hbSearchResult = new HBox(5, ivProduct, lbProductInfo);
         hbSearchResult.setAlignment(Pos.CENTER_LEFT);
+
+        obrLvProducts.setCellFactory(param -> new ListCell<Product>() {
+            @Override
+            protected void updateItem(Product product, boolean empty) {
+                super.updateItem(product, empty);
+
+                if (empty || product == null) {
+                    setGraphic(null);
+                    System.out.println("setCellFactory - empty item");
+                } else {
+                    String imageName = product.getProductImageName(); // Get image name (e.g. "0001.jpg")
+                    String relativeImageUrl = StorageLocation.imageFolder + imageName;
+                    // Get the full absolute path to the image
+                    Path imageFullPath = Paths.get(relativeImageUrl).toAbsolutePath();
+                    String imageFullUri = imageFullPath.toUri().toString();// Build the full image Uri
+
+                    ImageView ivPro;
+                    try {
+                        ivPro = new ImageView(new Image(imageFullUri, 50,45, true,true)); // Attempt to load the product image
+                    } catch (Exception e) {
+                        // If loading fails, use a default image directly from the resources folder
+                        ivPro = new ImageView(new Image("imageHolder.jpg",50,45,true,true)); // Directly load from resources
+                    }
+
+                    Label laProToString = new Label(product.toString()); // Create a label for product details
+                    HBox hbox = new HBox(10, ivPro, laProToString); // Put ImageView and label in a horizontal layout
+                    setGraphic(hbox);  // Set the whole row content
+                }
+            }
+        });
 
         VBox vbSearchPage = new VBox(15, laPageTitle, hbUnified, hbBtns, hbSearchResult);
         vbSearchPage.setPrefWidth(COLUMN_WIDTH);
@@ -234,5 +275,15 @@ public class CustomerView  {
     WindowBounds getWindowBounds() {
         return new WindowBounds(viewWindow.getX(), viewWindow.getY(),
                   viewWindow.getWidth(), viewWindow.getHeight());
+    }
+
+    public void updateMulti(ArrayList<Product> productList)
+    {
+        int proCounter = productList.size();
+        System.out.println(proCounter);
+        lbProductInfo.setText(proCounter + " products found");
+//        laSearchSummary.setVisible(true);
+        obeProductList.clear();
+        obeProductList.addAll(productList);
     }
 }
