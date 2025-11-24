@@ -45,6 +45,8 @@ public class CustomerView  {
     private VBox vbTrolleyPage;  //vbTrolleyPage and vbReceiptPage will swap with each other when need
     private VBox vbReceiptPage;
 
+    private Button btnAddToTrolley;
+
     TextField tfId; //for user input on the search page. Made accessible, so it can be accessed or modified by CustomerModel
     TextField tfName; //for user input on the search page. Made accessible so it can be accessed by CustomerModel
 
@@ -117,6 +119,7 @@ public class CustomerView  {
         tfUnified.setPromptText("eg. 0001 or DAB Radio");
         tfUnified.setStyle(UIStyle.textFiledStyle);
         HBox hbUnified = new HBox(10, laUnified, tfUnified);
+        hbUnified.setAlignment(Pos.TOP_LEFT);
 
         obeProductList = FXCollections.observableArrayList();
         obrLvProducts = new ListView<>(obeProductList);//ListView proListView observes proList
@@ -124,13 +127,12 @@ public class CustomerView  {
         obrLvProducts.setFixedCellSize(50);
         obrLvProducts.setStyle(UIStyle.listViewStyle);
 
-        Label laPlaceHolder = new Label(  " ".repeat(15)); //create left-side spacing so that this HBox aligns with others in the layout.
+        Label laPlaceHolder = new Label(  " ".repeat(6)); //create left-side spacing so that this HBox aligns with others in the layout.
         Button btnSearch = new Button("Search");
         btnSearch.setStyle(UIStyle.buttonStyle);
         btnSearch.setOnAction(this::buttonClicked);
-        Button btnAddToTrolley = new Button("Add to Trolley");
+        btnAddToTrolley = new Button("Add to Trolley");
         btnAddToTrolley.setStyle(UIStyle.buttonStyle);
-        btnAddToTrolley.setOnAction(this::buttonClicked);
         HBox hbBtns = new HBox(10, laPlaceHolder,btnSearch, btnAddToTrolley, obrLvProducts);
 
         ivProduct = new ImageView("imageHolder.jpg");
@@ -282,7 +284,7 @@ public class CustomerView  {
         int proCounter = productList.size();
         System.out.println(proCounter);
         lbProductInfo.setText(proCounter + " products found");
-//        laSearchSummary.setVisible(true);
+//        laSearchSummary.setVisible(true); // Not needed - It's redundant
         obeProductList.clear();
         obeProductList.addAll(productList);
     }
