@@ -233,8 +233,8 @@ public class WarehouseModel {
             double price = Double.parseDouble(textPrice);
             int stock = Integer.parseInt(textStock);
 
-            //insertNewProduct to databse (String id, String des,double price,String image,int stock)
-            //a record in databse looks like ('0001', '40 inch TV', 269.00,'0001TV.jpg',100)"
+            //insertNewProduct to database (String id, String des,double price,String image,int stock)
+            //a record in database looks like ('0001', '40 inch TV', 269.00,'0001TV.jpg',100)"
             databaseRW.insertNewProduct(theNewProId,description,price,imageNameWithExtension,stock);
             updateView(UpdateForAction.BtnSummitNew);
             theNewProId = null;

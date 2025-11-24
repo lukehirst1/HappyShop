@@ -78,44 +78,7 @@ public class CustomerModel {
 //            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
             productList = databaseRW.searchProduct(keyword); // Search the database using the name or ID of the product.
-
-            // Is the new productList NOT empty - i.e. Does it have something inside of it?
-            if (!productList.isEmpty())
-            {
-                // Assign theProduct to productList
-                theProduct = productList.getFirst();
-            }
-            else
-            {
-                // List is empty - theProduct is null.
-                theProduct = null;
-            }
-
-            if (theProduct != null && theProduct.getStockQuantity() > 0)
-            {
-                lowStockCheck();
-                double unitPrice = theProduct.getUnitPrice();
-                String description = theProduct.getProductDescription();
-                int stock = theProduct.getStockQuantity();
-                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", keyword, description, unitPrice);
-                String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
-                displayLaSearchResult = baseInfo + quantityInfo;
-                System.out.println(displayLaSearchResult);
-                Main.mainHolder.PlaySound(searchResult);
-            }
-            else
-            {
-                theProduct = null;
-//                displayLaSearchResult = "No Product was found with ID " + productId;
-//                System.out.println("No Product was found with ID " + productId);
-//                displayLaSearchResult = "No Product was found with " + productName;
-//                System.out.println("No Product was found with " + productName);
-                displayLaSearchResult = "No product was found with the ID or Name of " + keyword;
-                System.out.println("Failed to find product");
-                Main.mainHolder.StopSound();
-                Main.mainHolder.PlaySound(searchNull);
-                productList.clear();
-            }
+            selectProduct();
         }
         else
         {
@@ -127,6 +90,39 @@ public class CustomerModel {
             productList.clear();
         }
         updateView();
+    }
+
+    /**
+     * Uses the search result to select a item from the list, and allows the product to be added to the trolley
+     * If the product is invalid, don't add it to the trolley
+     */
+    // Now I need to select the desired product, and add it to the trolley
+    void selectProduct()
+    {
+        if (theProduct != null && theProduct.getStockQuantity() > 0)
+        {
+            lowStockCheck();
+            double unitPrice = theProduct.getUnitPrice();
+            String description = theProduct.getProductDescription();
+            int stock = theProduct.getStockQuantity();
+            String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", description, unitPrice);
+            String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
+            displayLaSearchResult = baseInfo + quantityInfo;
+            System.out.println(displayLaSearchResult);
+            Main.mainHolder.PlaySound(searchResult);
+        }
+        else
+        {
+            theProduct = null;
+//                displayLaSearchResult = "No Product was found with ID " + productId;
+//                System.out.println("No Product was found with ID " + productId);
+//                displayLaSearchResult = "No Product was found with " + productName;
+//                System.out.println("No Product was found with " + productName);
+            displayLaSearchResult = "Product could not be added to the trolley!";
+            System.out.println("Failed to add product to the trolley!");
+            Main.mainHolder.StopSound();
+            Main.mainHolder.PlaySound(searchNull);
+        }
     }
 
     /**
