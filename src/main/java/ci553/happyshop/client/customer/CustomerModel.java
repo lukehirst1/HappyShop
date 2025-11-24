@@ -78,7 +78,32 @@ public class CustomerModel {
 //            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
             productList = databaseRW.searchProduct(keyword); // Search the database using the name or ID of the product.
-            selectProduct();
+            //theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+           // selectProduct();
+            if (theProduct != null && theProduct.getStockQuantity() > 0)
+            {
+                lowStockCheck();
+                double unitPrice = theProduct.getUnitPrice();
+                String description = theProduct.getProductDescription();
+                int stock = theProduct.getStockQuantity();
+                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", description, unitPrice);
+                String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
+                displayLaSearchResult = baseInfo + quantityInfo;
+                System.out.println(displayLaSearchResult);
+                Main.mainHolder.PlaySound(searchResult);
+            }
+//            else
+//            {
+//                theProduct = null;
+////                displayLaSearchResult = "No Product was found with ID " + productId;
+////                System.out.println("No Product was found with ID " + productId);
+////                displayLaSearchResult = "No Product was found with " + productName;
+////                System.out.println("No Product was found with " + productName);
+//                displayLaSearchResult = "Product could not be added to the trolley!";
+//                System.out.println("Failed to add product to the trolley!");
+//                Main.mainHolder.StopSound();
+//                Main.mainHolder.PlaySound(searchNull);
+//            }
         }
         else
         {
@@ -97,33 +122,33 @@ public class CustomerModel {
      * If the product is invalid, don't add it to the trolley
      */
     // Now I need to select the desired product, and add it to the trolley
-    void selectProduct()
-    {
-        if (theProduct != null && theProduct.getStockQuantity() > 0)
-        {
-            lowStockCheck();
-            double unitPrice = theProduct.getUnitPrice();
-            String description = theProduct.getProductDescription();
-            int stock = theProduct.getStockQuantity();
-            String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", description, unitPrice);
-            String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
-            displayLaSearchResult = baseInfo + quantityInfo;
-            System.out.println(displayLaSearchResult);
-            Main.mainHolder.PlaySound(searchResult);
-        }
-        else
-        {
-            theProduct = null;
-//                displayLaSearchResult = "No Product was found with ID " + productId;
-//                System.out.println("No Product was found with ID " + productId);
-//                displayLaSearchResult = "No Product was found with " + productName;
-//                System.out.println("No Product was found with " + productName);
-            displayLaSearchResult = "Product could not be added to the trolley!";
-            System.out.println("Failed to add product to the trolley!");
-            Main.mainHolder.StopSound();
-            Main.mainHolder.PlaySound(searchNull);
-        }
-    }
+//    void selectProduct()
+//    {
+//        if (theProduct != null && theProduct.getStockQuantity() > 0)
+//        {
+//            lowStockCheck();
+//            double unitPrice = theProduct.getUnitPrice();
+//            String description = theProduct.getProductDescription();
+//            int stock = theProduct.getStockQuantity();
+//            String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", description, unitPrice);
+//            String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
+//            displayLaSearchResult = baseInfo + quantityInfo;
+//            System.out.println(displayLaSearchResult);
+//            Main.mainHolder.PlaySound(searchResult);
+//        }
+//        else
+//        {
+//            theProduct = null;
+////                displayLaSearchResult = "No Product was found with ID " + productId;
+////                System.out.println("No Product was found with ID " + productId);
+////                displayLaSearchResult = "No Product was found with " + productName;
+////                System.out.println("No Product was found with " + productName);
+//            displayLaSearchResult = "Product could not be added to the trolley!";
+//            System.out.println("Failed to add product to the trolley!");
+//            Main.mainHolder.StopSound();
+//            Main.mainHolder.PlaySound(searchNull);
+//        }
+//    }
 
     /**
      * Is the current stock low, or not available?
@@ -164,7 +189,8 @@ public class CustomerModel {
      * exists, before it continues. The method also organises the trolley by Product ID.
      */
     void addToTrolley(){
-        if(theProduct!= null && !stockEmpty)
+        theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
+        if (theProduct !=null)
         {
             // trolley.add(theProduct) — Product is appended to the end of the trolley.
             // To keep the trolley organized, add code here or call a method that:

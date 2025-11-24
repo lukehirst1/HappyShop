@@ -59,7 +59,7 @@ public class CustomerView  {
     private TextArea taReceipt;//in receipt page
 
     private ObservableList<Product> obeProductList; //observable product list
-    ListView<Product> obrLvProducts; //A ListView observes the product list
+    protected ListView<Product> obrLvProducts; //A ListView observes the product list
 
     private Label laUnified;
 
@@ -132,6 +132,7 @@ public class CustomerView  {
         btnSearch.setStyle(UIStyle.buttonStyle);
         btnSearch.setOnAction(this::buttonClicked);
         btnAddToTrolley = new Button("Add to Trolley");
+        btnAddToTrolley.setOnAction(this::buttonClicked);
         btnAddToTrolley.setStyle(UIStyle.buttonStyle);
         HBox hbBtns = new HBox(10, laPlaceHolder,btnSearch, btnAddToTrolley, obrLvProducts);
 
@@ -288,4 +289,6 @@ public class CustomerView  {
         obeProductList.clear();
         obeProductList.addAll(productList);
     }
+
+
 }
