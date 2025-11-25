@@ -8,6 +8,12 @@ import java.sql.SQLException;
 public class CustomerController {
     public CustomerModel cusModel;
 
+    /**
+     * Performs a different action according to which button is pressed
+     * @param action
+     * @throws SQLException
+     * @throws IOException
+     */
     public void doAction(String action) throws SQLException, IOException {
         switch (action) {
             case "Search":

@@ -61,12 +61,16 @@ public class CustomerView  {
     private ObservableList<Product> obeProductList; //observable product list
     protected ListView<Product> obrLvProducts; //A ListView observes the product list
 
-    private Label laUnified;
+    private Label laUnified; // For a simpler and cleaner way of displaying the information
 
     // Holds a reference to this CustomerView window for future access and management
     // (e.g., positioning the removeProductNotifier when needed).
     private Stage viewWindow;
 
+    /**
+     * Constructs the initial window that the user sees
+     * @param window
+     */
     public void start(Stage window) {
         VBox vbSearchPage = createSearchPage();
         vbTrolleyPage = CreateTrolleyPage();
@@ -92,6 +96,10 @@ public class CustomerView  {
         viewWindow=window;// Sets viewWindow to this window for future reference and management.
     }
 
+    /**
+     * This constructs a search page, which uses the flexible search functionality
+     * @return
+     */
     private VBox createSearchPage() {
         Label laPageTitle = new Label("Search by Product ID/Name");
         laPageTitle.setStyle(UIStyle.labelTitleStyle);
@@ -113,12 +121,12 @@ public class CustomerView  {
         HBox hbName = new HBox(10, laName, tfName);
  */
 
-        laUnified = new Label("Name / ID:");
+        laUnified = new Label("Name / ID:"); // Create the new laUnified label
         laUnified.setStyle(UIStyle.labelStyle);
-        tfUnified = new TextField();
+        tfUnified = new TextField(); // Create the new tfUnified textField
         tfUnified.setPromptText("eg. 0001 or DAB Radio");
         tfUnified.setStyle(UIStyle.textFiledStyle);
-        HBox hbUnified = new HBox(10, laUnified, tfUnified);
+        HBox hbUnified = new HBox(10, laUnified, tfUnified); // Creates a new HBox
         hbUnified.setAlignment(Pos.TOP_LEFT);
 
         obeProductList = FXCollections.observableArrayList();
@@ -128,10 +136,10 @@ public class CustomerView  {
         obrLvProducts.setStyle(UIStyle.listViewStyle);
 
         Label laPlaceHolder = new Label(  " ".repeat(6)); //create left-side spacing so that this HBox aligns with others in the layout.
-        Button btnSearch = new Button("Search");
+        Button btnSearch = new Button("Search"); // Creates a new button with "Search"
         btnSearch.setStyle(UIStyle.buttonStyle);
         btnSearch.setOnAction(this::buttonClicked);
-        btnAddToTrolley = new Button("Add to Trolley");
+        btnAddToTrolley = new Button("Add to Trolley"); // Creates a new button with "Add to Trolley"
         btnAddToTrolley.setOnAction(this::buttonClicked);
         btnAddToTrolley.setStyle(UIStyle.buttonStyle);
         HBox hbBtns = new HBox(10, laPlaceHolder,btnSearch, btnAddToTrolley, obrLvProducts);
@@ -240,7 +248,7 @@ public class CustomerView  {
             Button btn = (Button)event.getSource();
             String action = btn.getText();
             if(action.equals("Add to Trolley")){
-                showTrolleyOrReceiptPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
+                showTrolleyOrReceiptPage(vbTrolleyPage);//ensure trolleyPage shows if the last customer did not close their receiptPage
             }
             if(action.equals("OK & Close")){
                 showTrolleyOrReceiptPage(vbTrolleyPage);

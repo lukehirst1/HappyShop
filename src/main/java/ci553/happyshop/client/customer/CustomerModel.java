@@ -78,8 +78,6 @@ public class CustomerModel {
 //            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
             productList = databaseRW.searchProduct(keyword); // Search the database using the name or ID of the product.
-            //theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
-           // selectProduct();
             if (theProduct != null && theProduct.getStockQuantity() > 0)
             {
                 lowStockCheck();
@@ -92,18 +90,6 @@ public class CustomerModel {
                 System.out.println(displayLaSearchResult);
                 Main.mainHolder.PlaySound(searchResult);
             }
-//            else
-//            {
-//                theProduct = null;
-////                displayLaSearchResult = "No Product was found with ID " + productId;
-////                System.out.println("No Product was found with ID " + productId);
-////                displayLaSearchResult = "No Product was found with " + productName;
-////                System.out.println("No Product was found with " + productName);
-//                displayLaSearchResult = "Product could not be added to the trolley!";
-//                System.out.println("Failed to add product to the trolley!");
-//                Main.mainHolder.StopSound();
-//                Main.mainHolder.PlaySound(searchNull);
-//            }
         }
         else
         {
@@ -118,50 +104,20 @@ public class CustomerModel {
     }
 
     /**
-     * Uses the search result to select a item from the list, and allows the product to be added to the trolley
-     * If the product is invalid, don't add it to the trolley
-     */
-    // Now I need to select the desired product, and add it to the trolley
-//    void selectProduct()
-//    {
-//        if (theProduct != null && theProduct.getStockQuantity() > 0)
-//        {
-//            lowStockCheck();
-//            double unitPrice = theProduct.getUnitPrice();
-//            String description = theProduct.getProductDescription();
-//            int stock = theProduct.getStockQuantity();
-//            String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", description, unitPrice);
-//            String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
-//            displayLaSearchResult = baseInfo + quantityInfo;
-//            System.out.println(displayLaSearchResult);
-//            Main.mainHolder.PlaySound(searchResult);
-//        }
-//        else
-//        {
-//            theProduct = null;
-////                displayLaSearchResult = "No Product was found with ID " + productId;
-////                System.out.println("No Product was found with ID " + productId);
-////                displayLaSearchResult = "No Product was found with " + productName;
-////                System.out.println("No Product was found with " + productName);
-//            displayLaSearchResult = "Product could not be added to the trolley!";
-//            System.out.println("Failed to add product to the trolley!");
-//            Main.mainHolder.StopSound();
-//            Main.mainHolder.PlaySound(searchNull);
-//        }
-//    }
-
-    /**
      * Is the current stock low, or not available?
      */
     void lowStockCheck()
     {
+        // Is the stock quantity less than or equal to 15, but more than zero?
         if (theProduct.getStockQuantity() <= 15 && theProduct.getStockQuantity() > 0)
         {
+            // Warn the customer that the stock is currently low, and open a new window
             System.out.println("The stock that you requested is currently low.");
             Main.mainHolder.PlaySound(customerWarn);
             Main.mainHolder.StopSound();
             Main.startLowStockWarn(new Stage());
         }
+        // The stock is completely gone, alert the customer
         else if (theProduct.getStockQuantity() < 0)
         {
             Main.mainHolder.PlaySound(customerEmpty);
@@ -170,19 +126,6 @@ public class CustomerModel {
             stockEmpty = true;
         }
     }
-
-    /**
-     * Checks if the requested product is in stock or not. If not, it removes the item from the cart.
-     */
-//    void stockCheck()
-//    {
-//        // Uses a for loop to cycle through the trolley.
-//        for (Product pCheck : trolley)
-//        {
-//            Product pChecker = new Product(theProduct.getProductId(), theProduct.getProductDescription(), theProduct.getProductImageName(), theProduct.getUnitPrice(), theProduct.getStockQuantity());
-//            // Too many items for the stock, so remove it from the cart.
-//        }
-//    }
 
     /**
      * Adds the selected product to a trolley. If it does not exist, it asks the user to search for a product that
@@ -206,6 +149,7 @@ public class CustomerModel {
             Main.mainHolder.PlaySound(customerAdded);
             System.out.println("Added to trolley");
         }
+        // No product selected, throw a error exception
         else
         {
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";
@@ -243,13 +187,20 @@ public class CustomerModel {
         Collections.sort(trolley, Comparator.comparing(Product::getProductId));
     }
 
+    /**
+     * This method checks for if the requested stock of a item is not more than 50.
+     * If it is, it throws a excessiveOrderQuantityException (EOQE)
+     */
     void validateTrolley()
     {
+        // Cycle through the trolley
             for(Product p : trolley) {
                 int i = p.getOrderedQuantity() + theProduct.getOrderedQuantity();
+                // Is the requested stock amount more than or equal to 50?
                 if (i > 50)
                     try
                     {
+                        // Throw the exception
                         exceededQuantity = true;
                         throw new ExcessiveOrderQuantityException("Sorry, it appears that item is above the allowed limit.");
                     }
@@ -260,9 +211,15 @@ public class CustomerModel {
         }
     }
 
-
+    /**
+     * Allows the user to check out the trolley, and it generates a new
+     * order which then goes to OrderHub
+     * @throws IOException
+     * @throws SQLException
+     */
     void checkOut() throws IOException, SQLException
     {
+        // First: Is the trolley NOT empty?
         if(!trolley.isEmpty()){
             // Group the products in the trolley by productId to optimize stock checking
             // Check the database for sufficient stock for all products in the trolley.
@@ -280,7 +237,7 @@ public class CustomerModel {
                 // This reduces the product quantity down by how much has been purchased.
                 insufficientProducts = databaseRW.purchaseStocks(trolley);
 
-                // Is it possible to buy the products?
+                // Is it possible to buy the products, and is the requested order quantity less than or equal to 50?
                 if (insufficientProducts.isEmpty() && theProduct.getOrderedQuantity() <= 50)
                 {
                     // If stock is sufficient for all products
@@ -381,7 +338,7 @@ public class CustomerModel {
             imageName = "imageHolder.jpg";
         }
         cusView.update(imageName, displayLaSearchResult, displayTaTrolley,displayTaReceipt);
-        cusView.updateMulti(productList);
+        cusView.updateMulti(productList); // For searching flexibly
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.
