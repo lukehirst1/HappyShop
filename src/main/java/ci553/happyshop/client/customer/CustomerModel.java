@@ -29,7 +29,7 @@ import java.util.*;
 public class CustomerModel {
     public CustomerView cusView;
     public DatabaseRW databaseRW; //Interface type, not specific implementation
-    //Benefits: Flexibility: Easily change the database implementation.
+    // Benefits: Flexibility: Easily change the database implementation.
 
     private Product theProduct = null; // product found from search
     private ArrayList<Product> productList = new ArrayList<>();
@@ -42,11 +42,7 @@ public class CustomerModel {
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
 
-    public LowStockWarning showWarning;
-    public RemoveProductNotifier removal;
-
     protected boolean stockEmpty = false;
-    protected boolean searchOption = false;
     protected boolean exceededQuantity = false;
 
     // Holder for audio strings
@@ -149,7 +145,7 @@ public class CustomerModel {
             Main.mainHolder.PlaySound(customerAdded);
             System.out.println("Added to trolley");
         }
-        // No product selected, throw a error exception
+        // No product selected, throw an error exception
         else
         {
             displayLaSearchResult = "Please search for an available product before adding it to the trolley";

@@ -129,6 +129,16 @@ public class CustomerView  {
         HBox hbUnified = new HBox(10, laUnified, tfUnified); // Creates a new HBox
         hbUnified.setAlignment(Pos.TOP_LEFT);
 
+        tfUnified.setOnAction(actionEvent -> {
+            try {
+                cusController.doAction("Search");  // Search by pressing Enter
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         obeProductList = FXCollections.observableArrayList();
         obrLvProducts = new ListView<>(obeProductList);//ListView proListView observes proList
         obrLvProducts.setPrefHeight(HEIGHT - 100);
@@ -142,7 +152,10 @@ public class CustomerView  {
         btnAddToTrolley = new Button("Add to Trolley"); // Creates a new button with "Add to Trolley"
         btnAddToTrolley.setOnAction(this::buttonClicked);
         btnAddToTrolley.setStyle(UIStyle.buttonStyle);
-        HBox hbBtns = new HBox(10, laPlaceHolder,btnSearch, btnAddToTrolley, obrLvProducts);
+        HBox hbProducts = new HBox(10, laPlaceHolder, obrLvProducts);
+
+        HBox hbBtns = new HBox(10, btnSearch, btnAddToTrolley);
+        hbBtns.setAlignment(Pos.CENTER_LEFT);
 
         ivProduct = new ImageView("imageHolder.jpg");
         ivProduct.setFitHeight(60);
@@ -150,12 +163,12 @@ public class CustomerView  {
         ivProduct.setPreserveRatio(true); // Image keeps its original shape and fits inside 60×60
         ivProduct.setSmooth(true); //make it smooth and nice-looking
 
-        lbProductInfo = new Label("Thank you for shopping with us.");
-        lbProductInfo.setWrapText(true);
-        lbProductInfo.setMinHeight(Label.USE_PREF_SIZE);  // Allow auto-resize
-        lbProductInfo.setStyle(UIStyle.labelMulLineStyle);
-        HBox hbSearchResult = new HBox(5, ivProduct, lbProductInfo);
-        hbSearchResult.setAlignment(Pos.CENTER_LEFT);
+//        lbProductInfo = new Label("Thank you for shopping with us.");
+//        lbProductInfo.setWrapText(true);
+//        lbProductInfo.setMinHeight(Label.USE_PREF_SIZE);  // Allow auto-resize
+//        lbProductInfo.setStyle(UIStyle.labelMulLineStyle);
+//        HBox hbSearchResult = new HBox(5, ivProduct, lbProductInfo);
+//        hbSearchResult.setAlignment(Pos.CENTER_LEFT);
 
         obrLvProducts.setCellFactory(param -> new ListCell<Product>() {
             @Override
@@ -165,7 +178,9 @@ public class CustomerView  {
                 if (empty || product == null) {
                     setGraphic(null);
                     System.out.println("setCellFactory - empty item");
-                } else {
+                }
+                else
+                {
                     String imageName = product.getProductImageName(); // Get image name (e.g. "0001.jpg")
                     String relativeImageUrl = StorageLocation.imageFolder + imageName;
                     // Get the full absolute path to the image
@@ -187,7 +202,7 @@ public class CustomerView  {
             }
         });
 
-        VBox vbSearchPage = new VBox(15, laPageTitle, hbUnified, hbBtns, hbSearchResult);
+        VBox vbSearchPage = new VBox(15, laPageTitle, hbUnified, hbBtns, hbProducts);
         vbSearchPage.setPrefWidth(COLUMN_WIDTH);
         vbSearchPage.setAlignment(Pos.TOP_CENTER);
         vbSearchPage.setStyle("-fx-padding: 15px;");
@@ -248,7 +263,7 @@ public class CustomerView  {
             Button btn = (Button)event.getSource();
             String action = btn.getText();
             if(action.equals("Add to Trolley")){
-                showTrolleyOrReceiptPage(vbTrolleyPage);//ensure trolleyPage shows if the last customer did not close their receiptPage
+                showTrolleyOrReceiptPage(vbTrolleyPage); //ensure trolleyPage shows if the last customer did not close their receiptPage
             }
             if(action.equals("OK & Close")){
                 showTrolleyOrReceiptPage(vbTrolleyPage);
@@ -266,7 +281,7 @@ public class CustomerView  {
     public void update(String imageName, String searchResult, String trolley, String receipt) {
 
         ivProduct.setImage(new Image(imageName));
-        lbProductInfo.setText(searchResult);
+       // lbProductInfo.setText(searchResult);
         taTrolley.setText(trolley);
         if (!receipt.equals("")) {
             showTrolleyOrReceiptPage(vbReceiptPage);
@@ -292,7 +307,7 @@ public class CustomerView  {
     {
         int proCounter = productList.size();
         System.out.println(proCounter);
-        lbProductInfo.setText(proCounter + " products found");
+       // lbProductInfo.setText(proCounter + " products found");
 //        laSearchSummary.setVisible(true); // Not needed - It's redundant
         obeProductList.clear();
         obeProductList.addAll(productList);

@@ -22,7 +22,7 @@ public class LowStockWarning
         lowStockWarn.setOnAction(this::buttonClicked);
         lowStockWarnNo.setOnAction(this::buttonClicked);
 
-        TextField warning = new TextField("It appears the stock you requested is currently low. Would you like to continue to add this to the cart?");
+        TextField warning = new TextField("It appears the stock you requested is currently low. Would you like to continue to add this product to the cart?");
         warning.setEditable(false);
         VBox warningBox = new VBox(25, warning, lowStockWarn, lowStockWarnNo);
 
@@ -44,7 +44,7 @@ public class LowStockWarning
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();
         }
-        else if (warnLabel.equals("No"))
+        if (warnLabel.equals("No"))
         {
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();
