@@ -74,6 +74,10 @@ public class CustomerModel {
 //            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
             productList = databaseRW.searchProduct(keyword); // Search the database using the name or ID of the product.
+            cusView.updateMulti(productList); // For searching flexibly
+            Main.mainHolder.StopSound();
+            Main.mainHolder.PlaySound(searchResult);
+
             if (theProduct != null && theProduct.getStockQuantity() > 0)
             {
                 lowStockCheck();
@@ -84,7 +88,6 @@ public class CustomerModel {
                 String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
                 displayLaSearchResult = baseInfo + quantityInfo;
                 System.out.println(displayLaSearchResult);
-                Main.mainHolder.PlaySound(searchResult);
             }
         }
         else
@@ -334,7 +337,6 @@ public class CustomerModel {
             imageName = "imageHolder.jpg";
         }
         cusView.update(imageName, displayLaSearchResult, displayTaTrolley,displayTaReceipt);
-        cusView.updateMulti(productList); // For searching flexibly
     }
      // extra notes:
      //Path.toUri(): Converts a Path object (a file or a directory path) to a URI object.
