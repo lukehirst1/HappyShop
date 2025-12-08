@@ -8,6 +8,9 @@ import ci553.happyshop.client.picker.PickerModel;
 import ci553.happyshop.storageAccess.OrderFileManager;
 import ci553.happyshop.utility.StorageLocation;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.beans.PropertyEditor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -83,7 +86,7 @@ public class OrderHub  {
         //make an Order Object: id, Ordered_state, orderedDateTime, and productsList(trolley)
         Order theOrder = new Order(orderId,OrderState.Ordered,orderedDateTime,trolley);
 
-        //write order details to file for the orderId in orderedPath (ie. orders/ordered)
+        //write order details to file for the orderId in orderedPath (i.e. orders/ordered)
         String orderDetail = theOrder.orderDetails();
         Path path = orderedPath;
         OrderFileManager.createOrderFile(path, orderId, orderDetail);
