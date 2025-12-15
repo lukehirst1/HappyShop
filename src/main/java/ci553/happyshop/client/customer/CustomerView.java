@@ -210,6 +210,12 @@ public class CustomerView  {
         return vbSearchPage;
     }
 
+    /**
+     * This method is responsible for constructing the trolley page, which is combined with the search page
+     * to make one big GUI window. It handles the Cancel, Check Out and Add To Trolley buttons, which is later used
+     * by CustomerModel to handle different actions.
+     * @return
+     */
     private VBox CreateTrolleyPage() {
         Label laPageTitle = new Label("🛒🛒  Trolley 🛒🛒");
         laPageTitle.setStyle(UIStyle.labelTitleStyle);
@@ -237,6 +243,10 @@ public class CustomerView  {
         return vbTrolleyPage;
     }
 
+    /**
+     * This method is responsible for creating the receipt page, which opens in a separate window.
+     * @return
+     */
     private VBox createReceiptPage() {
         Label laPageTitle = new Label("Receipt");
         laPageTitle.setStyle(UIStyle.labelTitleStyle);
@@ -257,7 +267,10 @@ public class CustomerView  {
         return vbReceiptPage;
     }
 
-
+    /**
+     * This method is for handling button clicks.
+     * @param event
+     */
     private void buttonClicked(ActionEvent event) {
         try{
             Button btn = (Button)event.getSource();
@@ -277,7 +290,13 @@ public class CustomerView  {
         }
     }
 
-
+    /**
+     * This method updates the Customer page based on what is going on at the time.
+     * @param imageName
+     * @param searchResult
+     * @param trolley
+     * @param receipt
+     */
     public void update(String imageName, String searchResult, String trolley, String receipt) {
 
         ivProduct.setImage(new Image(imageName));
@@ -291,6 +310,11 @@ public class CustomerView  {
 
     // Replaces the last child of hbRoot with the specified page.
     // the last child is either vbTrolleyPage or vbReceiptPage.
+
+    /**
+     * This method determines whether the trolley or receipt pages are shown.
+     * @param pageToShow
+     */
     private void showTrolleyOrReceiptPage(Node pageToShow) {
         int lastIndex = hbRoot.getChildren().size() - 1;
         if (lastIndex >= 0) {
@@ -303,6 +327,10 @@ public class CustomerView  {
                   viewWindow.getWidth(), viewWindow.getHeight());
     }
 
+    /**
+     * This method is responsible for allowing the flexible search functionality to work.
+     * @param productList
+     */
     public void updateMulti(ArrayList<Product> productList)
     {
         int proCounter = productList.size();

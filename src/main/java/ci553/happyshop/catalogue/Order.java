@@ -40,6 +40,14 @@ public class Order {
 
     // Constructor used by OrderHub to create a new order for a customer.
     // Initializes the order with an ID, state, order date/time, and a list of ordered products.
+
+    /**
+     * The building blocks for a new order, it assigns the current variables in this class with the same variables (this.orderID = orderID;) for example.
+     * @param orderId
+     * @param state
+     * @param orderedDateTime
+     * @param productList
+     */
     public Order(int orderId,OrderState state, String orderedDateTime,ArrayList<Product> productList) {
         this.orderId = orderId;
         this.state = state;
@@ -48,6 +56,11 @@ public class Order {
     }
 
     //a set of getter methods
+
+    /**
+     * A series of getter methods - Useful for using these later.
+     * @return
+     */
     public int getOrderId() { return orderId;}
     public OrderState getState() { return state; }
     public String getOrderedDateTime(){ return orderedDateTime; }
@@ -55,6 +68,10 @@ public class Order {
         return productList;
     }
 
+    /**
+     * Sets the current order - Used later.
+     * @param state
+     */
     public void setState(OrderState state) { this.state = state; }
 
     /**

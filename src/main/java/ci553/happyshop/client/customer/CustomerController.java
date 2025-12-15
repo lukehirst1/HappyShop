@@ -21,6 +21,7 @@ public class CustomerController {
                 break;
             case "Add to Trolley":
                 cusModel.addToTrolley();
+                cusModel.lowStockCheck();
                 break;
             case "Cancel":
                 cusModel.cancel();

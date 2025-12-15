@@ -141,6 +141,7 @@ public class Main extends Application
         CustomerModel cusModel = new CustomerModel();
         DatabaseRW databaseRW = DatabaseRWFactory.createDatabaseRW();
 
+
         cusView.cusController = cusController;
         cusController.cusModel = cusModel;
         cusModel.cusView = cusView;
@@ -174,12 +175,20 @@ public class Main extends Application
     //The OrderTracker GUI - for customer to track their order's state(Ordered, Progressing, Collected)
     //This client is simple and does not follow the MVC pattern, as it only registers with the OrderHub
     //to receive order status notifications. All logic is handled internally within the OrderTracker.
+
+    /**
+     * Starts the orderTracker window.
+     */
     private void startOrderTracker(){
         OrderTracker orderTracker = new OrderTracker();
         orderTracker.registerWithOrderHub();
     }
 
     //initialize the orderMap<orderId, orderState> for OrderHub during system startup
+
+    /**
+     * Initialises the orderMap to allow the OrderHub class to use it later.
+     */
     private void initializeOrderMap(){
         OrderHub orderHub = OrderHub.getOrderHub();
         orderHub.initializeOrderMap();
@@ -219,14 +228,22 @@ public class Main extends Application
     }
 
     //starts the EmergencyExit GUI, - used to close the entire application immediately
+
+    /**
+     * Starts the EmergencyExit window - This can be used to immediately shut down the project if there is a problem.
+     */
     private void startEmergencyExit(){
         EmergencyExit.getEmergencyExit();
     }
 
+    /**
+     * Starts the lowStockWarn window.
+     * @param warn
+     */
     public static void startLowStockWarn(Stage warn)
     {
-        LowStockWarning warning = new LowStockWarning();
-        warning.start(warn);
+        LowStockWarning lowWarn = new LowStockWarning();
+        lowWarn.start(warn);
     }
 }
 

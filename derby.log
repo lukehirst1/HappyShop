@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Wed Dec 03 13:56:18 GMT 2025:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046): instance a816c00e-019a-e47f-e430-00000b8f0790 
-on database directory C:\Users\lukeh\OneDrive - University of Brighton\Year 2\object_oriented_development_testing\Files\TestProject\HappyShop\happyShopDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@1e80bfe8 
-Loaded from file:/C:/Users/lukeh/.m2/repository/org/apache/derby/derby/10.16.1.1/derby-10.16.1.1.jar
-java.vendor=Microsoft
-java.runtime.version=21.0.8+9-LTS
-user.dir=C:\Users\lukeh\OneDrive - University of Brighton\Year 2\object_oriented_development_testing\Files\TestProject\HappyShop
+Mon Dec 15 13:42:20 GMT 2025:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.16.1.1 - (1901046): instance a816c00e-019b-223f-6a13-00000c07faa0 
+on database directory C:\Users\lsh38\OneDrive - University of Brighton\Year 2\object_oriented_development_testing\Files\TestProject\HappyShop\happyShopDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@1e80bfe8 
+Loaded from file:/C:/Users/lsh38/.m2/repository/org/apache/derby/derby/10.16.1.1/derby-10.16.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=21.0.2+13-58
+user.dir=C:\Users\lsh38\OneDrive - University of Brighton\Year 2\object_oriented_development_testing\Files\TestProject\HappyShop
 os.name=Windows 11
 os.arch=amd64
 os.version=10.0

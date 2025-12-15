@@ -8,13 +8,19 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-
+/**
+ * This class is responsible for displaying a new GUI window when a product's stock falls below 15.
+ */
 public class LowStockWarning
 {
     // Display the low stock warning button
     public Button lowStockWarn;
     public Button lowStockWarnNo;
 
+    /**
+     * Constructs the new lowStockWarning window.
+     * @param window
+     */
     public void start(Stage window)
     {
         lowStockWarn = new Button("Yes");
@@ -34,6 +40,11 @@ public class LowStockWarning
         window.setTitle("HappyShop Low Stock Warning");
         window.show();
     }
+
+    /**
+     * Handles actions for different button clicks.
+     * @param warningEvent
+     */
     public void buttonClicked(ActionEvent warningEvent)
     {
         Button warnButton = ((Button) warningEvent.getSource());

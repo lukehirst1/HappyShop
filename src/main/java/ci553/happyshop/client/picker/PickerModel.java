@@ -75,6 +75,10 @@ public class PickerModel {
     }
 
     // Lock an order
+
+    /**
+     * This class locks the order in the PickerModel.java class
+     */
     private boolean lockOrder(int orderId) {
         if (lockedOrderIds.contains(orderId)) {
             return false; // Order is already locked
@@ -85,15 +89,27 @@ public class PickerModel {
     }
 
     // Unlock an order
+
+    /**
+     * Unlocks an order using the parameter OrderID
+     */
     private void unlockOrder(int orderId) {
         lockedOrderIds.remove(orderId);
     }
 
     // Check if an order is locked
+
+    /**
+     * Uses the parameter orderID to check if a order is locked.
+     */
     private boolean isOrderLocked(int orderId) {
         return lockedOrderIds.contains(orderId);
     }
 
+    /**
+     * Handles the collecting orders method. It only updates if the order is locked.
+     * @throws IOException
+     */
     public void doCollected() throws IOException {
         if(theOrderId!=0 && isOrderLocked(theOrderId)){
             theOrderState = OrderState.Collected;
@@ -107,6 +123,10 @@ public class PickerModel {
 
     // Registers this PickerModel instance with the OrderHub
     //so it can receive updates about orderMap changes.
+
+    /**
+     * Registers an order with the OrderHub.java class
+     */
     public void registerWithOrderHub(){
         OrderHub orderHub = OrderHub.getOrderHub();
         orderHub.registerPickerModel(this);
@@ -115,6 +135,11 @@ public class PickerModel {
     //Notifies the OrderHub of a change in the order state.
     //If the order is moving to the 'Progressing' state, asks OrderHub to read the order detail
     // from the file system for displaying in the pickerView.
+
+    /**
+     * Notifies the orderHub class that there is an order currently in progress.
+     * @throws IOException
+     */
     private void notifyOrderHub() throws IOException {
         orderHub.changeOrderStateMoveFile(theOrderId, theOrderState);
         if (theOrderState == OrderState.Progressing) {
@@ -125,6 +150,12 @@ public class PickerModel {
 
     // Sets the order map with new data and refreshes the display.
     // This method is called by OrderHub to set orderMap for picker.
+
+    /**
+     * Sets the order map with new data presented to it, and refreshes the picker's display
+     * The method is called by the OrderHub class, to set the orderMap for a picker.
+     * @param om
+     */
     public void setOrderMap(TreeMap<Integer,OrderState> om) {
         orderMap.clear();
         orderMap.putAll(om);
@@ -144,6 +175,9 @@ public class PickerModel {
         return sb.toString();
     }
 
+    /**
+     * Updates the picker's view
+     */
     private void updatePickerView()
     {
         pickerView.update(displayTaOrderMap,displayTaOrderDetail);

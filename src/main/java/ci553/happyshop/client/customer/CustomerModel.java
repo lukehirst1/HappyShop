@@ -74,17 +74,17 @@ public class CustomerModel {
 //            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
             productList = databaseRW.searchProduct(keyword); // Search the database using the name or ID of the product.
-            cusView.updateMulti(productList); // For searching flexibly
             Main.mainHolder.StopSound();
             Main.mainHolder.PlaySound(searchResult);
+            cusView.updateMulti(productList); // For searching flexibly
 
             if (theProduct != null && theProduct.getStockQuantity() > 0)
             {
-                lowStockCheck();
+                lowStockCheck(); // Check if the stock is low or not.
                 double unitPrice = theProduct.getUnitPrice();
                 String description = theProduct.getProductDescription();
                 int stock = theProduct.getStockQuantity();
-                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", description, unitPrice);
+                String baseInfo = String.format("Product_Id: %s\n%s,\nPrice: £%.2f", keyword, description, unitPrice);
                 String quantityInfo = stock < 100 ? String.format("\n%d units left.", stock) : "";
                 displayLaSearchResult = baseInfo + quantityInfo;
                 System.out.println(displayLaSearchResult);
@@ -103,7 +103,8 @@ public class CustomerModel {
     }
 
     /**
-     * Is the current stock low, or not available?
+     * This class checks if the currently selected stock is more than zero. If it is not, then it
+     * warns the customer that the product is low on stock.
      */
     void lowStockCheck()
     {
@@ -159,8 +160,9 @@ public class CustomerModel {
     }
 
     /**
-     * This is responsible for making the trolley more organised, and does not
-     * make duplicate items
+     * This class organises the trolley by productID, in descending order. It checks if the productID is equal to theProduct's ID.
+     * It then makes a new trolley, which is then used by Collections.sort() to organise the trolley.
+     *
      */
     void organisedTrolley()
     {
@@ -187,7 +189,7 @@ public class CustomerModel {
     }
 
     /**
-     * This method checks for if the requested stock of a item is not more than 50.
+     * This method checks for if the requested stock of an item is not more than 50.
      * If it is, it throws a excessiveOrderQuantityException (EOQE)
      */
     void validateTrolley()
@@ -290,6 +292,7 @@ public class CustomerModel {
             System.out.println("Your trolley is empty");
         }
         updateView();
+        cusView.updateMulti(productList);
     }
 
     /**
@@ -312,6 +315,9 @@ public class CustomerModel {
         return new ArrayList<>(grouped.values());
     }
 
+    /**
+     * This class completely clears the order, and allows the customer to start again.
+     */
     void cancel(){
         trolley.clear();
         Main.mainHolder.StopSound();
@@ -319,10 +325,17 @@ public class CustomerModel {
         displayTaTrolley="";
         updateView();
     }
+
+    /**
+     * Closes the receipt.
+     */
     void closeReceipt(){
         displayTaReceipt="";
     }
 
+    /**
+     * Updates the Customer's GUI window, depending on what is currently going on at the time.
+     */
     void updateView() {
         if(theProduct != null)
         {
@@ -343,6 +356,11 @@ public class CustomerModel {
      //File.toURI(): Converts a File object (a file on the filesystem) to a URI object
 
     //for test only
+
+    /**
+     * Not used in the project - for testing purposes only.
+     * @return
+     */
     public ArrayList<Product> getTrolley() {
         return trolley;
     }

@@ -49,12 +49,18 @@ public class Product implements Comparable<Product> {
     }
     public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity; }
 
+    /**
+     * This method allows the Product to compare IDs with product A to product B.
+     */
     @Override
     public int compareTo(Product otherProduct) {
         // Compare by product ID or any other attribute you want to sort by
         return this.proId.compareTo(otherProduct.proId); // Sort by proId alphabetically (ascending);
     }
 
+    /**
+     * This is used to display the current product's information.
+     */
     @Override
     // Creates a formatted string containing ID, price (with 2 decimal places), stock amount, and description
     // Used in the Warehouse search page to display searched product information
