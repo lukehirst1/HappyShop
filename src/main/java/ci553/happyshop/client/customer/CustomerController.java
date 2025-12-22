@@ -1,7 +1,5 @@
 package ci553.happyshop.client.customer;
 
-import ci553.happyshop.client.Main;
-
 import java.io.IOException;
 import java.sql.SQLException;
 

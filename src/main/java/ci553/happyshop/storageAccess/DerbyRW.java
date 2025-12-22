@@ -22,8 +22,8 @@ public class DerbyRW implements DatabaseRW {
     private static String dbURL = DatabaseRWFactory.dbURL; // Shared by all instances
     private  Lock lock = new ReentrantLock(); // Each instance has its own lock
 
-    //search product by product Id or name, return a list of products or null
-    //search by Id at first, if get null, search by product name
+    //search product by product ID or name, return a list of products or null
+    //search by ID at first, if the statement gets a null response, search by product name
     //currently used by warehouseModel.
     // try to use this method to upgrade customer client so that user can search by id and name
     public ArrayList<Product> searchProduct(String keyword) throws SQLException {
@@ -44,7 +44,7 @@ public class DerbyRW implements DatabaseRW {
         return productList;
     }
 
-    //search  by product Id, return a product or null
+    //search  by product ID, return a product or null
     public Product searchByProductId(String proId) throws SQLException {
         Product product = null;
         String query = "SELECT * FROM ProductTable WHERE productID = ?";
@@ -292,7 +292,7 @@ public class DerbyRW implements DatabaseRW {
     }
 
     //check if product ID is unique
-    //warehouse tries to add a new prodcut, id must be unique
+    //warehouse tries to add a new product, id must be unique
     public boolean isProIdAvailable(String proId) throws SQLException {
         String query = "SELECT COUNT(*) FROM ProductTable WHERE productID = ?";
                              //the count of records that match the given proId.

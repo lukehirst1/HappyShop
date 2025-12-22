@@ -6,7 +6,6 @@ import javafx.stage.Stage;
 /**
  * A standalone OrderTracker client that can be run independently without launching the full system.
  * Designed for early-stage testing, though full functionality may require other clients to be active.
- *
  * This client is simple and does not follow the MVC pattern, as it only registers with the OrderHub
  * to receive order status notifications. All logic is handled internally within the OrderTracker.
  */

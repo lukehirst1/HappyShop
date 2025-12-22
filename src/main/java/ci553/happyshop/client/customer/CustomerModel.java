@@ -33,11 +33,11 @@ public class CustomerModel {
 
     private Product theProduct = null; // product found from search
     private ArrayList<Product> productList = new ArrayList<>();
-    private ArrayList<Product> trolley = new ArrayList<>(); // a list of products in trolley
+    private final ArrayList<Product> trolley = new ArrayList<>(); // a list of products in trolley
     protected ArrayList<Product> insufficientProducts = new ArrayList<>();
 
     // Four UI elements to be passed to CustomerView for display updates.
-    private String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
+    String imageName = "imageHolder.jpg";                // Image to show in product preview (Search Page)
     private String displayLaSearchResult = "No Product was searched yet"; // Label showing search result message (Search Page)
     private String displayTaTrolley = "";                                // Text area content showing current trolley items (Trolley Page)
     private String displayTaReceipt = "";                                // Text area content showing receipt after checkout (Receipt Page)
@@ -185,7 +185,7 @@ public class CustomerModel {
        // trolley.add(theProduct); - Commented out due to duplication
         trolley.add(pNew);
         // Sorts out the trolley numerically by Product ID.
-        Collections.sort(trolley, Comparator.comparing(Product::getProductId));
+        trolley.sort(Comparator.comparing(Product::getProductId));
     }
 
     /**

@@ -28,7 +28,6 @@ import java.util.List;
 
 /**
  * The CustomerView is separated into two sections by a line :
- *
  * 1. Search Page – Always visible, allowing customers to browse and search for products.
  * 2. the second page – display either the Trolley Page or the Receipt Page
  *    depending on the current context. Only one of these is shown at a time.
@@ -45,7 +44,7 @@ public class CustomerView  {
     private VBox vbTrolleyPage;  //vbTrolleyPage and vbReceiptPage will swap with each other when need
     private VBox vbReceiptPage;
 
-    private Button btnAddToTrolley;
+    Button btnAddToTrolley;
 
     TextField tfId; //for user input on the search page. Made accessible, so it can be accessed or modified by CustomerModel
     TextField tfName; //for user input on the search page. Made accessible so it can be accessed by CustomerModel
@@ -170,7 +169,7 @@ public class CustomerView  {
 //        HBox hbSearchResult = new HBox(5, ivProduct, lbProductInfo);
 //        hbSearchResult.setAlignment(Pos.CENTER_LEFT);
 
-        obrLvProducts.setCellFactory(param -> new ListCell<Product>() {
+        obrLvProducts.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Product product, boolean empty) {
                 super.updateItem(product, empty);
@@ -302,7 +301,7 @@ public class CustomerView  {
         ivProduct.setImage(new Image(imageName));
        // lbProductInfo.setText(searchResult);
         taTrolley.setText(trolley);
-        if (!receipt.equals("")) {
+        if (!receipt.isEmpty()) {
             showTrolleyOrReceiptPage(vbReceiptPage);
             taReceipt.setText(receipt);
         }

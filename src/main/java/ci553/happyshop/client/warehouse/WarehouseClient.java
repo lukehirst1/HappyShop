@@ -20,7 +20,6 @@ public class WarehouseClient extends Application {
      * Initializes the Warehouse client's Model, View, and Controller,and links them together for communication.
      * It also creates the DatabaseRW instance via the DatabaseRWFactory and injects it into the Model.
      * Once the components are linked, the warehouse interface (view) is started.
-     *
      * Also creates the dependent HistoryWindow and AlertSimulator,
      * which track the position of the Warehouse window and are triggered by the Model when needed.
      * These components are linked after launching the Warehouse interface.

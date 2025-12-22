@@ -33,7 +33,7 @@ public class WarehouseModel {
     public HistoryWindow historyWindow;
     public AlertSimulator alertSimulator;
     private String displayInputErrorMsg =""; //error message showing in the alertSimulator
-    private ArrayList<String> displayManageHistory = new ArrayList<>();// Manage Product history
+    private final ArrayList<String> displayManageHistory = new ArrayList<>();// Manage Product history
                                                                //shows in the HistoryWindow
     private enum ManageProductType{
         Edited,
@@ -60,9 +60,13 @@ public class WarehouseModel {
         ShowInputErrorMsg
     }
 
+    /**
+     * Handles the flexible search for searching for warehouse products.
+     * @throws SQLException
+     */
     void doSearch() throws SQLException {
         String keyword = view.tfSearchKeyword.getText().trim();
-        if (!keyword.equals("")) {
+        if (!keyword.isEmpty()) {
             productList = databaseRW.searchProduct(keyword);
         }
         else
@@ -95,6 +99,9 @@ public class WarehouseModel {
         }
     }
 
+    /**
+     * Allows the user to edit a warehouse product that the user has searched for.
+     */
     void doEdit() {
         System.out.println("Edit gets called in model");
         Product pro = view.obrLvProducts.getSelectionModel().getSelectedItem();
@@ -118,6 +125,9 @@ public class WarehouseModel {
 
     }
 
+    /**
+     * Completely cancels the action that the user has already performed beforehand
+     */
     void doCancel(){
        if(view.theProFormMode.equals("EDIT")){
            updateView(UpdateForAction.BtnCancelEdit);
@@ -128,6 +138,12 @@ public class WarehouseModel {
            theNewProId = null;
        }
     }
+
+    /**
+     * Progresses the request, depending on whether the user is either editing an existing product, or creating a new product
+     * @throws SQLException
+     * @throws IOException
+     */
     void doSummit() throws SQLException, IOException {
         if(view.theProFormMode.equals("EDIT")){
             doSubmitEdit();
@@ -137,6 +153,11 @@ public class WarehouseModel {
         }
     }
 
+    /**
+     * This request is responsible for submitting the edited product back to the warehouse client.
+     * @throws IOException
+     * @throws SQLException
+     */
     private void doSubmitEdit() throws IOException, SQLException {
         System.out.println("ok edit is called");
         if(theSelectedPro!=null) {
@@ -148,7 +169,7 @@ public class WarehouseModel {
             String textStock =view.tfStockEdit.getText().trim();
             String description = view.taDescriptionEdit.getText().trim();
 
-            if(view.isUserSelectedImageEdit == true){  //if the user changed image
+            if(view.isUserSelectedImageEdit){  //if the user changed image
                 ImageFileManager.deleteImageFile(StorageLocation.imageFolder, imageName); //delete the old image
                 //copy the user selected image to project image folder
                 //we use productId as image name, but we need to get its extension from the user selected image
@@ -156,7 +177,7 @@ public class WarehouseModel {
                 imageName = newImageNameWithExtension;
             }
 
-            if(validateInputEditChild(textPrice,textStock,description)==false){
+            if(!validateInputEditChild(textPrice,textStock,description)){
                 updateView(UpdateForAction.ShowInputErrorMsg);
             }
             else{
@@ -174,12 +195,17 @@ public class WarehouseModel {
         }
     }
 
+    /**
+     * This method allows the user to adjust the stock quantity of a particular product.
+     * @param addOrSub
+     * @throws SQLException
+     */
     void doChangeStockBy(String addOrSub) throws SQLException {
         int oldStock = Integer.parseInt(view.tfStockEdit.getText().trim());
         int newStock =oldStock;
         String TextChangeBy = view.tfChangeByEdit.getText().trim();
         if(!TextChangeBy.isEmpty()){
-            if(validateInputChangeStockBy(TextChangeBy)==false){
+            if(!validateInputChangeStockBy(TextChangeBy)){
                 updateView(UpdateForAction.ShowInputErrorMsg);
             } else{
                 int changeBy = Integer.parseInt(TextChangeBy);
@@ -197,6 +223,12 @@ public class WarehouseModel {
         }
     }
 
+    /**
+     * This validates the changeStockBy() method
+     * @param txChangeBy
+     * @return
+     * @throws SQLException
+     */
     private  boolean validateInputChangeStockBy(String txChangeBy) throws SQLException {
         StringBuilder errorMessage = new StringBuilder();
         // Validate Stock changBy Quantity (must be an integer)
@@ -206,7 +238,7 @@ public class WarehouseModel {
             errorMessage.append("Invalid stock quantity format.\n");
         }
         // Show Alert if there are errors
-        if (errorMessage.length() > 0) {
+        if (!errorMessage.isEmpty()) {
             displayInputErrorMsg = errorMessage.toString();
             return false;
         }
@@ -234,7 +266,7 @@ public class WarehouseModel {
             int stock = Integer.parseInt(textStock);
 
             //insertNewProduct to database (String id, String des,double price,String image,int stock)
-            //a record in database looks like ('0001', '40 inch TV', 269.00,'0001TV.jpg',100)"
+            //a record in database looks like ('0001', '40-inch TV', 269.00,'0001TV.jpg',100)''"
             databaseRW.insertNewProduct(theNewProId,description,price,imageNameWithExtension,stock);
             updateView(UpdateForAction.BtnSummitNew);
             theNewProId = null;
@@ -246,7 +278,7 @@ public class WarehouseModel {
 
         StringBuilder errorMessage = new StringBuilder();
 
-        // Validate Price (must be a positive number, and two digitals )
+        // Validate Price (must be a positive number, and two decimals )
         try {
             double price = Double.parseDouble(txPrice);
 
@@ -283,7 +315,7 @@ public class WarehouseModel {
             errorMessage.append("\u2022 Product description cannot be empty.");
 
         // Show Alert if there are errors
-        if (errorMessage.length() > 0) {
+        if (!errorMessage.isEmpty()) {
             displayInputErrorMsg = errorMessage.toString();
             return false;
         }
@@ -294,7 +326,7 @@ public class WarehouseModel {
                                    String description, String imageUri) throws SQLException {
 
         StringBuilder errorMessage = new StringBuilder();
-        // Validate Id (must be exactly 4 digits)
+        // Validate the identification (must be exactly 4 digits)
         if (id == null || !id.matches("\\d{4}"))
             errorMessage.append("\u2022 Product ID must be exactly 4 digits.\n");
 
@@ -302,7 +334,7 @@ public class WarehouseModel {
         if(!databaseRW.isProIdAvailable(id))
             errorMessage.append("\u2022 Product ID " + id + " is not available.\n");
 
-        // Validate Price (must be a positive number, and two digitals )
+        // Validate Price (must be a positive number, and two decimals )
         try {
             double price = Double.parseDouble(txPrice);
 
@@ -339,14 +371,17 @@ public class WarehouseModel {
             errorMessage.append("\u2022 An image must be selected.");
 
         // Show Alert if there are errors
-        if (errorMessage.length() > 0) {
+        if (!errorMessage.isEmpty()) {
             displayInputErrorMsg = errorMessage.toString();
             return false;
         }
         return true;
     }
 
-
+    /**
+     * Updates the window display, depending on what action has been performed.
+     * @param updateFor
+     */
     private void updateView(UpdateForAction updateFor){
         switch (updateFor) {
             case UpdateForAction.BtnSearch:
@@ -394,6 +429,10 @@ public class WarehouseModel {
         }
     }
 
+    /**
+     * This shows the stock's history from when the session is first initiated, up to the stock being edited / deleted / added to the database.
+     * @param type
+     */
     private void showManageStockHistory(ManageProductType type){
         String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         String record="";
@@ -407,7 +446,7 @@ public class WarehouseModel {
             case ManageProductType.New :
                 record = theNewProId + " added to database successfully, " + dateTime;
         }
-        if(!record.equals(""))
+        if(!record.isEmpty())
             displayManageHistory.add(record);
         historyWindow.showManageHistory(displayManageHistory);
     }

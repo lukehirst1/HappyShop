@@ -13,43 +13,37 @@ import java.util.TreeSet;
  * PickerModel handles two main responsibilities:
  * 1. Observing OrderHub.
  * 2. Notifying PickerView to Updates user interface.
- *
- * 1. Observing OrderHub.
  * PickerModel is an observer of  OrderHub, receiving orderMap from OrderHub.
  * When a picker claims a task, PickerModel:
  * - Retrieves the first unlocked order from the orderMap.
  * - Locks the selected order to prevent other pickers from accessing it.
  * - Notifies OrderHub to update the orderMap, and begin preparation of the order.
- *
  * Once the order is collected by the customer, PickerModel:
  * - Unlocks the order.
  * - Notifies OrderHub to update the orderMap.
  * - Begins the next task if available.
- *
  * All changes in order state are centralized through OrderHub to ensure synchronization.
  * No picker directly changes the display before OrderHub updates the shared orderMap;
  * instead, each PickerModel waits for OrderHub's notification to refresh its state.
- *
  * Imagine the interaction flow:
  * PickerModel: "Hey OrderHub, I found an order that needs to be prepared. Please update the orderMap."
  * OrderHub: "Got it. I'll update the orderMap first."
  * OrderHub (after updating): "Attention all pickers: the orderMap has changed. Please refresh your views."
- *
  * This ensures that all PickerModels stay in sync by only updating their local state
  * in response to centralized changes made by the OrderHub.
  */
 
 public class PickerModel {
     public PickerView pickerView;
-    private OrderHub orderHub = OrderHub.getOrderHub();
+    OrderHub orderHub = OrderHub.getOrderHub();
 
     //two elements that need to be passed to PickerView for updating.
     private String displayTaOrderMap="";
     private String displayTaOrderDetail ="";
 
     // TreeMap (orderID,state) holding order IDs and their corresponding states.
-    private static TreeMap<Integer, OrderState> orderMap = new TreeMap<>();
-    private static TreeSet<Integer> lockedOrderIds = new TreeSet<>(); // Track locked orders by orderId
+    static TreeMap<Integer, OrderState> orderMap = new TreeMap<>();
+    static TreeSet<Integer> lockedOrderIds = new TreeSet<>(); // Track locked orders by orderId
 
     private int theOrderId=0; //Order ID assigned to a picker;
                               // 0 means no order is currently assigned.
@@ -100,7 +94,7 @@ public class PickerModel {
     // Check if an order is locked
 
     /**
-     * Uses the parameter orderID to check if a order is locked.
+     * Uses the parameter orderID to check if an order is locked.
      */
     private boolean isOrderLocked(int orderId) {
         return lockedOrderIds.contains(orderId);
@@ -143,7 +137,7 @@ public class PickerModel {
     private void notifyOrderHub() throws IOException {
         orderHub.changeOrderStateMoveFile(theOrderId, theOrderState);
         if (theOrderState == OrderState.Progressing) {
-            // Read order file, ie. order details
+            // Read order file, i.e. order details
             displayTaOrderDetail = orderHub.getOrderDetailForPicker(theOrderId);
         }
     }

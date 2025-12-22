@@ -17,8 +17,8 @@ import java.nio.channels.FileLock;
  * For subsequent calls, it reads the current number, increments it by 1, writes the updated value
  * back to the file, and returns the new order ID.</p>
  *
- * <p>File access is synchronized using a file lock to ensure safe operation in a multi-threaded
- * or multi-process environment. The method is simple to use by OrderHub
+ * <p>File access is synchronized using a file lock to ensure safe operation in a multithreaded
+ * or multiprocess environment. The method is simple to use by OrderHub
  * or any component that needs to generate order numbers.</p>
  *
  * <p>FileChannel allows exclusive locking of files or specific regions of files,

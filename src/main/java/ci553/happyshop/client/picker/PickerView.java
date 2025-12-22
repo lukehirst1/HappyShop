@@ -17,7 +17,6 @@ import java.io.IOException;
  * 1. vbOrderMapRoot - the default view, displaying available orders awaiting assignment.
  * 2. vbOrderDetailRoot - displayed once a picker is assigned an order, allowing them to view
  *    and prepare the order.
- *
  * The window initially shows the orderMapRoot.
  * Once an order is assigned to a picker,the view switches to orderDetailToot.
  * The view switches to orderMapRoot for the next task after the order is prepared and collected by customer.
@@ -34,9 +33,9 @@ public class PickerView  {
     private VBox vbOrderDetailRoot;
 
     //Three controllers needs updating when program going on
-    private TextArea taOrderMap = new TextArea();
+    TextArea taOrderMap = new TextArea();
           // TextArea for displaying a list of orders and their states(orderId → state)
-    private TextArea taOrderDetail = new TextArea();
+    TextArea taOrderDetail = new TextArea();
         // TextArea for displaying detailed information about the selected order after it is assigned to the picker.
     private Label laDetailRootTitle;
        // Label used as the title for the Order Detail section.
@@ -53,7 +52,7 @@ public class PickerView  {
 
         // Set the window close request to prevent closing if the order is not collected
         window.setOnCloseRequest(event -> {
-            if (!taOrderDetail.getText().equals("")) {
+            if (!taOrderDetail.getText().isEmpty()) {
                 event.consume(); // Prevent window from closing
                 laDetailRootTitle.setText("Pls complete the order before closing.");
             }

@@ -24,8 +24,8 @@ import java.util.TreeMap;
  */
 
 public class OrderTracker {
-    private final int WIDTH = UIStyle.trackerWinWidth;
-    private final int HEIGHT = UIStyle.trackerWinHeight;
+    final int WIDTH = UIStyle.trackerWinWidth;
+    final int HEIGHT = UIStyle.trackerWinHeight;
 
     // TreeMap (orderID,state) holding order IDs and their corresponding states.
     private static final TreeMap<Integer, OrderState> ordersMap = new TreeMap<>();

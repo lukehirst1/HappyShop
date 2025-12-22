@@ -28,7 +28,6 @@ import javafx.stage.StageStyle;
 
 /**
  * This class provides a simple alert simulation window to display error messages.
- *
  * - The scene is created only once to avoid unnecessary recreation of the same layout.
  * - The window is created and shown only when needed. If the window is already open, it will be brought to the front.
  * - The `window` and `scene` are managed separately, allowing the scene to be reused while creating the window as needed.
@@ -38,8 +37,8 @@ import javafx.stage.StageStyle;
  */
 
 public class AlertSimulator {
-    private static int WIDTH = UIStyle.AlertSimWinWidth;
-    private static int HEIGHT = UIStyle.AlertSimWinHeight;
+    static int WIDTH = UIStyle.AlertSimWinWidth;
+    static int HEIGHT = UIStyle.AlertSimWinHeight;
 
     public WarehouseView warehouseView;
     private  Stage window; //window for AlertSimulator
@@ -87,7 +86,7 @@ public class AlertSimulator {
         //window.setTitle("\uD83C\uDFEC input error message"); // for icon 🏬
         window.setScene(scene);
 
-        //get bounds of warehouse window which trigers the alertSimulator
+        //get bounds of warehouse window which triggers the alertSimulator
         // so that we can put the alertSimulator on top of it and at a suitable position
         WindowBounds bounds = warehouseView.getWindowBounds();
         window.setX(bounds.x + bounds.width-10);
@@ -108,7 +107,6 @@ public class AlertSimulator {
 
     /**
      * Closes the alert window.
-     *
      * The purpose of this method is to provide a way to close the alert window from outside the AlertSimulator class,
      * when it is no longer needed (e.g., after canceling or submitting an action while the alert window is still showing
      * from a previous error).

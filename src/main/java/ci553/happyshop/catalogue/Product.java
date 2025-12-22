@@ -2,9 +2,8 @@ package ci553.happyshop.catalogue;
 
 /**
  * The Product class used to hold the information about a product:
- *
  * Fields:
- * - productId: Unique identifier for the product (eg 0001).
+ * - productId: Unique identifier for the product (e.g. 0001).
  * - description: Textual description of the product.
  * - unitPrice: Price per single unit of the product.
  * - orderedQuantity: Quantity involved in a customer's order.
@@ -12,18 +11,18 @@ package ci553.happyshop.catalogue;
  */
 
 public class Product implements Comparable<Product> {
-    private String proId;
-    private String proDescription;
-    private String proImageName;
-    private double unitPrice;
+    private final String proId;
+    private final String proDescription;
+    private final String proImageName;
+    private final double unitPrice;
     private int orderedQuantity = 1; //The quantity of this product in the customer's order.
-    private int stockQuantity;//
+    private final int stockQuantity;//
 
     /**
      * Constructor,used by DatabaseRW, make product from searching ResultSet
      * @param id Product ID
      * @param des Description of product
-     * @param image image name of product, eg 0001.jpg (0001 is product ID)
+     * @param image image name of product, e.g. 0001.jpg (0001 is product ID)
      * @param aPrice The price of the product
      * @param stockQuantity The Quantity of the product in stock
      */
@@ -47,7 +46,7 @@ public class Product implements Comparable<Product> {
     public void setOrderedQuantity(int orderedQuantity) {
         this.orderedQuantity = orderedQuantity;
     }
-    public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity; }
+    // public void setStockQuantity(int stockQuantity) {this.stockQuantity = stockQuantity; } // Unused, commented out.
 
     /**
      * This method allows the Product to compare IDs with product A to product B.
@@ -70,8 +69,7 @@ public class Product implements Comparable<Product> {
         return productInfo;
     }
 
-    /** alternative constructors retained for possible future use.
-     *
+    /**alternative constructors retained for possible future use.
     public Product(String id, String des, double aPrice, int orderedQuantity, int stockQuantity) {
         proId = id;
         proDescription = des;

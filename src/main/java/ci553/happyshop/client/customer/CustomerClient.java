@@ -20,7 +20,6 @@ public class CustomerClient extends Application {
      * Creates the Model, View, and Controller objects and links them together for communication.
      * It also creates the DatabaseRW instance via the DatabaseRWFactory and injects it into the CustomerModel.
      * Once the components are linked, the customer interface (view) is started.
-     *
      * Also creates the RemoveProductNotifier, which tracks the position of the Customer View
      * and is triggered by the Customer Model when needed.
      */

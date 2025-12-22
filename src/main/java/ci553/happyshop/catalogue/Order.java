@@ -7,12 +7,10 @@ import java.util.ArrayList;
 
 /**
  * The Order class represents a customer order, including metadata and a list of ordered products.
- *
  * Responsibilities:
- * - sotres information about an order, including order ID, current order state, timestamps, and the list of products.
+ * - sorts information about an order, including order ID, current order state, timestamps, and the list of products.
  * - Provides getter methods for order attributes and allows updating the order state.
  * - Formats the full order details for writing to a file, including timestamps and item list.
- *
  * An order file example:
  * Order ID: 10
  * State: Ordered
@@ -25,24 +23,23 @@ import java.util.ArrayList;
  *  0007    USB drive          ( 1) £   6.99
  * --------------------------------------------
  *  Total                               £  66.97
- *
  * This class is mainly used by OrderHub to create and manage order objects during
  * the order lifecycle (ordered → progressing → collected).
  */
 
 public class Order {
-    private int orderId;
+    private final int orderId;
     private OrderState state;
-    private String orderedDateTime="";
-    private String progressingDateTime="";
-    private String collectedDateTime="";
-    private ArrayList<Product> productList = new ArrayList<>(); //Trolley
+    private final String orderedDateTime;
+    final String progressingDateTime="";
+    final String collectedDateTime="";
+    private final ArrayList<Product> productList; //Trolley
 
     // Constructor used by OrderHub to create a new order for a customer.
     // Initializes the order with an ID, state, order date/time, and a list of ordered products.
 
     /**
-     * The building blocks for a new order, it assigns the current variables in this class with the same variables (this.orderID = orderID;) for example.
+     * The building blocks for a new order, it assigns the current variables in this class with the same variables (this.orderID = orderID;)) for example.
      * @param orderId
      * @param state
      * @param orderedDateTime

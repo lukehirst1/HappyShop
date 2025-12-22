@@ -3,6 +3,9 @@ package ci553.happyshop.client.warehouse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Handles the different actions that corresponds to the user's response in the Warehouse Client.
+ */
 public class WarehouseController {
     public WarehouseModel model;
 

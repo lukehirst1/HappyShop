@@ -18,7 +18,6 @@ public class PickerClient extends Application {
      * Creates the Model, View, and Controller objects for the Picker client.
      * Links them together so they can communicate with each other.
      * Starts the Picker interface.
-     *
      * Also registers the PickerModel with the OrderHub to receive order notifications.
      */
     @Override

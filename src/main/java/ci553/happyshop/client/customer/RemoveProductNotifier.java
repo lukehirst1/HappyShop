@@ -15,10 +15,8 @@ import javafx.stage.Stage;
 /**
  * The RemoveProductNotifier class provides a dependent window that displays messages
  * and suggested actions to the customer when certain products are removed from their trolley.
- *
  * It is triggered by the CustomerModel when the customer submits a trolley that includes
  * products exceeding available stock.
- *
  * This window tracks the position of the main CustomerView window to appear nearby,
  * maintaining a cohesive and user-friendly interface.
  */
@@ -34,8 +32,8 @@ import javafx.stage.Stage;
 public class RemoveProductNotifier {
     public CustomerView cusView; //tracking the window of cusView
 
-    private static int WIDTH = UIStyle.removeProNotifierWinWidth;
-    private static int HEIGHT = UIStyle.removeProNotifierWinHeight;
+    private final static int WIDTH = UIStyle.removeProNotifierWinWidth;
+    private final static int HEIGHT = UIStyle.removeProNotifierWinHeight;
 
     private Stage window; //window for ProductRemovalNotifier
     private Scene scene; // Scene for ProductRemovalNotifier
@@ -52,7 +50,7 @@ public class RemoveProductNotifier {
         taRemoveMsg.setPrefHeight(80);
         taRemoveMsg.setStyle(UIStyle.alertContentTextAreaStyle);
 
-        Label laCustomerAction = new Label(cutomerActionBuilder());
+        Label laCustomerAction = new Label(customerActionBuilder());
         laCustomerAction.setWrapText(true);
         laCustomerAction.setStyle(UIStyle.alertContentUserActionStyle);
 
@@ -79,7 +77,7 @@ public class RemoveProductNotifier {
         scene = new Scene(pane, WIDTH, HEIGHT);
     }
 
-    private String cutomerActionBuilder(){
+    private String customerActionBuilder(){
         StringBuilder actions = new StringBuilder(" \u26A1 You can now: \n");
         actions.append("\u2022 Checkout your trolley as it is \n");
         actions.append("\u2022 Re-add the removed products (up to the available quantity) \n");
@@ -100,7 +98,7 @@ public class RemoveProductNotifier {
         window.setTitle("🛒Products removal notifier");
         window.setScene(scene);
 
-        //get bounds of betterCustomer window which trigers the ProductRemovalNotifier
+        //get bounds of betterCustomer window which triggers the ProductRemovalNotifier
         // so that we can put the ProductRemovalNotifier at a suitable position
         WindowBounds bounds = cusView.getWindowBounds();
         window.setX(bounds.x + bounds.width -WIDTH -10); // Position to the right of warehouse window

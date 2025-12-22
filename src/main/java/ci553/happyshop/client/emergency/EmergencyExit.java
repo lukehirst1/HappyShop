@@ -14,8 +14,8 @@ import javafx.stage.Stage;
  * It is a singleton with static access, instantiation is restricted.
  */
 public class EmergencyExit {
-    private final int WIDTH = UIStyle.EmergencyExitWinWidth;
-    private final int HEIGHT = UIStyle.EmergencyExitWinHeight;
+    final int WIDTH = UIStyle.EmergencyExitWinWidth;
+    final int HEIGHT = UIStyle.EmergencyExitWinHeight;
     private static EmergencyExit emergencyExit;
 
     //used by Main class to get the single instance

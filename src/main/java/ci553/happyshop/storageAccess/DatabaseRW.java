@@ -8,20 +8,16 @@ import java.util.ArrayList;
 /**
  * The DatabaseRW interface defines the contract for interacting with the product database.
  * It is currently implemented by the DerbyRW class, which provides the actual functionality.
- *
  * Responsibilities:
  * - Searching for products by keyword or product ID.
  * - Performing stock updates and validations during purchases.
  * - Updating, deleting, or inserting products.
  * - Checking whether a product ID is available before insertion.
- *
  * Why use this interface:
  * Introducing this interface allows for better separation of specification and implementation,
  * making the system more adaptable and maintainable.
- *
  * 1. **Ease of Substitution**: If the application switches to a different database system
  *    (e.g., from Derby to MySQL or SQLite), a new implementation can be provided without affecting other components.
- *
  * 2. **Improved Testability**: During unit testing, mock implementations can simulate database behavior,
  *    enabling effective testing without requiring a live database connection.
  */

@@ -14,10 +14,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * The setDB class is responsible for resetting the database when the system is first initialized.
  * This class performs operations that delete and recreate the database tables, as well as insert
  * default values for a fresh start. Ensuring that everything is properly set up for the fresh database state
- *
  * WARNING: This class should only be used once when starting the system for the first time. It
  * will wipe all current data in the database and replace it with a fresh, predefined structure and data.
- *
  * Key operations:
  * 1. Deletes all existing tables in the database.
  * 2. Recreates the database tables based on the initial schema.
@@ -32,10 +30,10 @@ public class SetDatabase {
     private static final String dbURL = DatabaseRWFactory.dbURL + ";create=true";
                                   //the value is "jdbc:derby:happyShopDB;create=true"
 
-    private static Path imageWorkingFolderPath = StorageLocation.imageFolderPath;
-    private static Path imageBackupFolderPath = StorageLocation.imageResetFolderPath;
+    private final static Path imageWorkingFolderPath = StorageLocation.imageFolderPath;
+    private final static Path imageBackupFolderPath = StorageLocation.imageResetFolderPath;
 
-    private String[] tables = {"ProductTable"};
+    private final String[] tables = {"ProductTable"};
     // Currently only "ProductTable" exists, but using an array allows easy expansion
     // if more tables need to be processed in the future without changing the logic structure.
 
@@ -44,8 +42,8 @@ public class SetDatabase {
     public static void main(String[] args) throws SQLException, IOException {
         SetDatabase setDB = new SetDatabase();
         setDB.clearTables(); // clear all tables in the tables array from database if they are existing
-        setDB.initializeTable();//create and initialize databse and tables
-        setDB.queryTableAfterInitilization();
+        setDB.initializeTable();//create and initialize database and tables
+        setDB.queryTableAfterInitialization();
         deleteFilesInFolder(imageWorkingFolderPath);
         copyFolderContents(imageBackupFolderPath, imageWorkingFolderPath);
 
@@ -133,7 +131,7 @@ public class SetDatabase {
         }
     }
 
-    private void queryTableAfterInitilization() throws SQLException {
+    private void queryTableAfterInitialization() throws SQLException {
         lock.lock();
         //Query ProductTable
         String sqlQuery = "SELECT * FROM ProductTable";
@@ -194,13 +192,11 @@ public class SetDatabase {
      * 1. directory (Path or folder) path from which the traversal begins (the starting point of the walk).
      * 2. A FileVisitor object that defines the actions to be performed when a file or directory is visited.
      *    The visitor is an instance of the FileVisitor interface, which provides methods for handling different events during the traversal.
-     *
      * Here, we use an anonymous class to create the second argument - the instance (object) –
      * An anonymous class allows you to extend a superclass (or implement an interface) and instantiate it in a single, concise step,
      * without needing to define a separate named class. It combines both class extension and object creation into one operation,
      * typically used when you need a one-off implementation of a class or interface.
      * (Note: the object is the anonymous class's)
-     *
      * We did not use Files.walkFileTree(folder, new FileVisitor<>()) because FileVisitor is an interface, and we would need to implement
      * all of its methods ourselves. Instead, we use Files.walkFileTree(folder, new SimpleFileVisitor<>()) because:
      * - SimpleFileVisitor<> is an abstract class that implements the FileVisitor interface with default method implementations.
