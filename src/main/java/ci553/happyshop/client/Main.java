@@ -120,6 +120,8 @@ public class Main extends Application
         startWarehouseClient();
 
         startEmergencyExit();
+
+        startLowStockWarn();
     }
 
     /** The customer GUI -search product, add to trolley, cancel/submit trolley, view receipt
@@ -145,6 +147,13 @@ public class Main extends Application
         //RemoveProductNotifier removeProductNotifier = new RemoveProductNotifier();
         //removeProductNotifier.cusView = cusView;
         //cusModel.removeProductNotifier = removeProductNotifier;
+
+        /*
+        For testing purposes only
+         */
+        LowStockWarning lowStockWarning = new LowStockWarning();
+        lowStockWarning.cusView = cusView;
+        cusModel.lowStockWarn = lowStockWarning;
     }
 
     /** The picker GUI, - for staff to pack customer's order,
@@ -229,12 +238,11 @@ public class Main extends Application
 
     /**
      * Starts the lowStockWarn window.
-     * @param warn
      */
-    public static void startLowStockWarn(Stage warn)
+    public static void startLowStockWarn()
     {
         LowStockWarning lowWarn = new LowStockWarning();
-        lowWarn.start(warn);
+        lowWarn.start(new Stage());
     }
 }
 

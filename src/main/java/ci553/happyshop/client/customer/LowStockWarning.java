@@ -1,6 +1,8 @@
 package ci553.happyshop.client.customer;
 
+import javafx.css.Stylesheet;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,6 +19,8 @@ public class LowStockWarning
     public Button lowStockWarn;
     public Button lowStockWarnNo;
 
+    public CustomerView cusView;
+
     /**
      * Constructs the new lowStockWarning window.
      * @param window
@@ -28,14 +32,17 @@ public class LowStockWarning
         lowStockWarn.setOnAction(this::buttonClicked);
         lowStockWarnNo.setOnAction(this::buttonClicked);
 
-        TextField warning = new TextField("It appears the stock you requested is currently low. Would you like to continue to add this product to the cart?");
+        TextField warning = new TextField("The stock you have requested to add to your trolley is low. Would you like to continue adding it to the cart?");
         warning.setEditable(false);
         VBox warningBox = new VBox(25, warning, lowStockWarn, lowStockWarnNo);
+
+        warningBox.setPadding(new Insets(10, 10, 10, 10));
 
         warningBox.setAlignment(Pos.CENTER);
         warningBox.setSpacing(10);
 
         Scene warningScene = new Scene(warningBox, 550, 150);
+        warningScene.getStylesheets().add("src/main/resources/CSS/happyShopStyling.css");
         window.setScene(warningScene);
         window.setTitle("HappyShop Low Stock Warning");
         window.show();
@@ -55,7 +62,7 @@ public class LowStockWarning
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();
         }
-        if (warnLabel.equals("No"))
+        else if (warnLabel.equals("No"))
         {
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();

@@ -30,6 +30,7 @@ public class CustomerModel {
     public CustomerView cusView;
     public DatabaseRW databaseRW; //Interface type, not specific implementation
     // Benefits: Flexibility: Easily change the database implementation.
+    public LowStockWarning lowStockWarn;
 
     private Product theProduct = null; // product found from search
     private ArrayList<Product> productList = new ArrayList<>();
@@ -115,7 +116,7 @@ public class CustomerModel {
             System.out.println("The stock that you requested is currently low.");
             Main.mainHolder.PlaySound(customerWarn);
             Main.mainHolder.StopSound();
-            Main.startLowStockWarn(new Stage());
+            Main.startLowStockWarn();
         }
         // The stock is completely gone, alert the customer
         else if (theProduct.getStockQuantity() < 0)
@@ -145,7 +146,6 @@ public class CustomerModel {
             // It also sorts out the trolley by ProductID.
             organisedTrolley();
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
-            Main.mainHolder.StopSound();
             Main.mainHolder.PlaySound(customerAdded);
             System.out.println("Added to trolley");
         }
