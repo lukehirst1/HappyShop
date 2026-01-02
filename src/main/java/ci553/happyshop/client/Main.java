@@ -152,7 +152,6 @@ public class Main extends Application
         For testing purposes only
          */
         LowStockWarning lowStockWarning = new LowStockWarning();
-        lowStockWarning.cusView = cusView;
         cusModel.lowStockWarn = lowStockWarning;
     }
 

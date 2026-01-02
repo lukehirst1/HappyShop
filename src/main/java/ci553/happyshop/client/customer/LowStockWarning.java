@@ -24,12 +24,10 @@ public class LowStockWarning {
     public Button btnLowStockWarn;
     public Button btnLowStockWarnNo;
 
-    public LowStockWarning lowStockWarn;
-
     private final int WIDTH = UIStyle.lowStockWinWidth;
     private final int HEIGHT = UIStyle.lowStockWinHeight;
 
-    public CustomerView cusView;
+    public CustomerController cusController;
 
     public CustomerModel cusModel;
 
