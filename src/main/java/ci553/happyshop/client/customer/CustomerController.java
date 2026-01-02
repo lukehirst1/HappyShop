@@ -22,7 +22,7 @@ public class CustomerController {
                 cusModel.lowStockCheck();
                 break;
             case "Cancel":
-                cusModel.cancel();
+                 cusModel.cancel();
                 break;
             case "Check Out":
                 cusModel.checkOut();

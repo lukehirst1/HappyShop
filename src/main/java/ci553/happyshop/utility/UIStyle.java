@@ -72,6 +72,9 @@ public final class UIStyle {
     public static final int removeProNotifierWinWidth = customerWinWidth/2 +160;
     public static final int removeProNotifierWinHeight = 230;
 
+    public static final int lowStockWinWidth = 620;
+    public static final int lowStockWinHeight = 120;
+
     public static final int pickerWinWidth = 310;
     public static final int pickerWinHeight = 300;
 
@@ -157,5 +160,9 @@ public final class UIStyle {
 
     public static final String alertContentUserActionStyle = "-fx-font-size: 14px;" +
             "-fx-font-weight: normal; -fx-text-fill: green;";
+
+    public static final String lowStockWarningStyle = "-fx-font-size: 12px;" +
+            "-fx-font-weight: bold; -fx-control-inner-background: lightyellow; -fx-text-fill: black; " +
+            "-fx-background-color: yellow; -fx-text-color: black; -fx-button-color: black; -fx-padding: 5px";
 
 }

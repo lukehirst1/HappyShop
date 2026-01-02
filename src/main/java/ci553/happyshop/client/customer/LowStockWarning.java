@@ -1,25 +1,37 @@
 package ci553.happyshop.client.customer;
 
+import ci553.happyshop.utility.UIStyle;
+import ci553.happyshop.utility.WinPosManager;
 import javafx.css.Stylesheet;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import javax.sound.sampled.Line;
 
 /**
  * This class is responsible for displaying a new GUI window when a product's stock falls below 15.
  */
-public class LowStockWarning
-{
+public class LowStockWarning {
     // Display the low stock warning button
-    public Button lowStockWarn;
-    public Button lowStockWarnNo;
+    public Button btnLowStockWarn;
+    public Button btnLowStockWarnNo;
+
+    public LowStockWarning lowStockWarn;
+
+    private final int WIDTH = UIStyle.lowStockWinWidth;
+    private final int HEIGHT = UIStyle.lowStockWinHeight;
 
     public CustomerView cusView;
+
+    public CustomerModel cusModel;
 
     /**
      * Constructs the new lowStockWarning window.
@@ -27,22 +39,34 @@ public class LowStockWarning
      */
     public void start(Stage window)
     {
-        lowStockWarn = new Button("Yes");
-        lowStockWarnNo = new Button("No");
-        lowStockWarn.setOnAction(this::buttonClicked);
-        lowStockWarnNo.setOnAction(this::buttonClicked);
+        btnLowStockWarn = new Button("Yes");
+        btnLowStockWarnNo = new Button("No");
+        btnLowStockWarn.setOnAction(this::buttonClicked);
+        btnLowStockWarnNo.setOnAction(this::buttonClicked);
 
-        TextField warning = new TextField("The stock you have requested to add to your trolley is low. Would you like to continue adding it to the cart?");
-        warning.setEditable(false);
-        VBox warningBox = new VBox(25, warning, lowStockWarn, lowStockWarnNo);
+        btnLowStockWarn.setStyle(UIStyle.buttonStyle);
+        btnLowStockWarnNo.setStyle(UIStyle.buttonStyle);
 
-        warningBox.setPadding(new Insets(10, 10, 10, 10));
+        Label warning = new Label("The stock you have requested to add to your trolley is low. Would you like to add it anyway?");
+        warning.setStyle(UIStyle.labelStyle);
+        HBox warningLabel = new HBox(10, warning);
+        warningLabel.setAlignment(Pos.TOP_LEFT);
+
+        //
+        VBox warningBox = new VBox(55, warningLabel, btnLowStockWarn, btnLowStockWarnNo);
 
         warningBox.setAlignment(Pos.CENTER);
+        warningBox.setStyle(UIStyle.lowStockWarningStyle);
+        warningBox.setPrefWidth(WIDTH);
+        warningBox.setPrefHeight(HEIGHT);
         warningBox.setSpacing(10);
 
-        Scene warningScene = new Scene(warningBox, 550, 150);
-        warningScene.getStylesheets().add("src/main/resources/CSS/happyShopStyling.css");
+        btnLowStockWarn.setAlignment(Pos.CENTER_LEFT);
+        btnLowStockWarnNo.setAlignment(Pos.CENTER_RIGHT);
+
+        WinPosManager.registerWindow(window, WIDTH, HEIGHT);
+
+        Scene warningScene = new Scene(warningBox, WIDTH, HEIGHT);
         window.setScene(warningScene);
         window.setTitle("HappyShop Low Stock Warning");
         window.show();
