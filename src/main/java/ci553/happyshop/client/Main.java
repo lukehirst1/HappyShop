@@ -151,8 +151,6 @@ public class Main extends Application
         /*
         For testing purposes only
          */
-        LowStockWarning lowStockWarning = new LowStockWarning();
-        cusModel.lowStockWarn = lowStockWarning;
     }
 
     /** The picker GUI, - for staff to pack customer's order,

@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 public class CustomerController {
     public CustomerModel cusModel;
-
     /**
      * Performs a different action according to which button is pressed
      * @param action

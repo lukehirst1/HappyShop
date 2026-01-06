@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.FocusModel;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -24,10 +25,10 @@ public class LowStockWarning {
     public Button btnLowStockWarn;
     public Button btnLowStockWarnNo;
 
+    public Boolean basketRequest = false; // Has the user requested to add a low stock product to the trolley?
+
     private final int WIDTH = UIStyle.lowStockWinWidth;
     private final int HEIGHT = UIStyle.lowStockWinHeight;
-
-    public CustomerController cusController;
 
     public CustomerModel cusModel;
 
@@ -37,8 +38,8 @@ public class LowStockWarning {
      */
     public void start(Stage window)
     {
-        btnLowStockWarn = new Button("Yes");
-        btnLowStockWarnNo = new Button("No");
+        btnLowStockWarn = new Button("Add to Basket");
+        btnLowStockWarnNo = new Button("Cancel Order");
         btnLowStockWarn.setOnAction(this::buttonClicked);
         btnLowStockWarnNo.setOnAction(this::buttonClicked);
 
@@ -79,13 +80,16 @@ public class LowStockWarning {
         Button warnButton = ((Button) warningEvent.getSource());
         String warnLabel = warnButton.getText();
 
-        if (warnLabel.equals("Yes"))
+        if (warnLabel.equals("Add to Basket"))
         {
+            basketRequest = true;
+            cusModel.addToTrolley();
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();
         }
-        else if (warnLabel.equals("No"))
+        else if (warnLabel.equals("Cancel Order"))
         {
+            cusModel.cancel();
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();
         }

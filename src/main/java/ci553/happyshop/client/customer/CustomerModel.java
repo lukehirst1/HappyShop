@@ -14,6 +14,7 @@ import ci553.happyshop.utility.StorageLocation;
 import ci553.happyshop.utility.ProductListFormatter;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +31,7 @@ public class CustomerModel {
     public CustomerView cusView;
     public DatabaseRW databaseRW; //Interface type, not specific implementation
     // Benefits: Flexibility: Easily change the database implementation.
-    public LowStockWarning lowStockWarn;
+    public LowStockWarning lowStockWarning = new LowStockWarning();
 
     private Product theProduct = null; // product found from search
     private ArrayList<Product> productList = new ArrayList<>();
@@ -109,6 +110,9 @@ public class CustomerModel {
      */
     void lowStockCheck()
     {
+
+        lowStockWarning.cusModel = this;
+
         // Is the stock quantity less than or equal to 15, but more than zero?
         if (theProduct.getStockQuantity() <= 15 && theProduct.getStockQuantity() > 0)
         {
@@ -116,7 +120,7 @@ public class CustomerModel {
             System.out.println("The stock that you requested is currently low.");
             Main.mainHolder.PlaySound(customerWarn);
             Main.mainHolder.StopSound();
-            Main.startLowStockWarn();
+            lowStockWarning.start(new Stage());
         }
         // The stock is completely gone, alert the customer
         else if (theProduct.getStockQuantity() < 0)
@@ -133,6 +137,7 @@ public class CustomerModel {
      * exists, before it continues. The method also organises the trolley by Product ID.
      */
     void addToTrolley(){
+        lowStockWarning.cusModel = this;
         theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
         if (theProduct != null)
         {
@@ -142,12 +147,18 @@ public class CustomerModel {
             // 1. Merges items with the same product ID (combining their quantities).
             // 2. Sorts the products in the trolley by product ID.
 
+            if (theProduct.getStockQuantity() <= 15 && !lowStockWarning.basketRequest)
+            {
+                System.out.println("The stock is currently low...");
+                return;
+            }
             // This code originally caused the trolley to duplicate.
             // It also sorts out the trolley by ProductID.
             organisedTrolley();
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
             Main.mainHolder.PlaySound(customerAdded);
             System.out.println("Added to trolley");
+            lowStockWarning.basketRequest = false;
         }
         // No product selected, throw an error exception
         else
