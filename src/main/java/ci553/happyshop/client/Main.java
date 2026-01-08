@@ -121,7 +121,7 @@ public class Main extends Application
 
         startEmergencyExit();
 
-        startLowStockWarn();
+//        startLowStockWarn();
     }
 
     /** The customer GUI -search product, add to trolley, cancel/submit trolley, view receipt
