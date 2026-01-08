@@ -6,6 +6,7 @@ import ci553.happyshop.client.Main;
 import ci553.happyshop.client.warehouse.WarehouseClient;
 import ci553.happyshop.client.warehouse.WarehouseModel;
 import ci553.happyshop.customException.ExcessiveOrderQuantityException;
+import ci553.happyshop.customException.SearchCheckException;
 import ci553.happyshop.storageAccess.DatabaseRW;
 import ci553.happyshop.orderManagement.OrderHub;
 import ci553.happyshop.storageAccess.DatabaseRWFactory;
@@ -46,6 +47,8 @@ public class CustomerModel {
 
     protected boolean stockEmpty = false;
     protected boolean exceededQuantity = false;
+    protected boolean itemFound = false;
+    protected boolean stockLow = false;
 
     // Holder for audio strings
     protected String cancelled = "src/main/resources/audio/CustomerCancel.wav";
@@ -76,9 +79,21 @@ public class CustomerModel {
 //            theProduct = databaseRW.searchByProductId(keyword); //search database
            // trolley = databaseRW.searchProduct(productName); // Search the database using the name
             productList = databaseRW.searchProduct(keyword); // Search the database using the name or ID of the product.
-            Main.mainHolder.StopSound();
-            Main.mainHolder.PlaySound(searchResult);
-            cusView.updateMulti(productList); // For searching flexibly
+
+            try
+            {
+                if (productList == null || productList.isEmpty())
+                {
+                    itemFound = false;
+                    throw new SearchCheckException("That product does not exist");
+                }
+                itemFound = true;
+                cusView.updateMulti(productList); // For searching flexibly
+            }
+            catch (SearchCheckException SCE)
+            {
+               System.out.println(SCE.getMessage());
+            }
 
             if (theProduct != null && theProduct.getStockQuantity() > 0)
             {
@@ -97,7 +112,6 @@ public class CustomerModel {
             theProduct=null;
             displayLaSearchResult = "Please type either the ProductID or ProductName";
             System.out.println("Please type the ProductID or ProductName.");
-            Main.mainHolder.StopSound();
             Main.mainHolder.PlaySound(searchNull);
             productList.clear();
         }
@@ -119,14 +133,13 @@ public class CustomerModel {
             // Warn the customer that the stock is currently low, and open a new window
             System.out.println("The stock that you requested is currently low.");
             Main.mainHolder.PlaySound(customerWarn);
-            Main.mainHolder.StopSound();
+            stockLow = true;
             lowStockWarning.start(new Stage());
         }
         // The stock is completely gone, alert the customer
         else if (theProduct.getStockQuantity() < 0)
         {
             Main.mainHolder.PlaySound(customerEmpty);
-            Main.mainHolder.StopSound();
             System.out.println("We're sorry, but the requested stock is not available.");
             stockEmpty = true;
         }
@@ -331,9 +344,9 @@ public class CustomerModel {
      */
     void cancel(){
         trolley.clear();
-        Main.mainHolder.StopSound();
-        Main.mainHolder.PlaySound(cancelled);
         displayTaTrolley="";
+        itemFound = false;
+        stockLow = false;
         updateView();
     }
 

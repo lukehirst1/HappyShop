@@ -1,5 +1,6 @@
 package ci553.happyshop.client.customer;
 
+import ci553.happyshop.client.Main;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
 import javafx.css.Stylesheet;
@@ -24,6 +25,8 @@ public class LowStockWarning {
     // Display the low stock warning button
     public Button btnLowStockWarn;
     public Button btnLowStockWarnNo;
+
+    protected String clicked = "src/resources/audio/ButtonClick.wav";
 
     public Boolean basketRequest = false; // Has the user requested to add a low stock product to the trolley?
 
@@ -82,6 +85,7 @@ public class LowStockWarning {
 
         if (warnLabel.equals("Add to Basket"))
         {
+            Main.mainHolder.PlaySound(clicked);
             basketRequest = true;
             cusModel.addToTrolley();
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
@@ -89,6 +93,7 @@ public class LowStockWarning {
         }
         else if (warnLabel.equals("Cancel Order"))
         {
+            Main.mainHolder.PlaySound(clicked);
             cusModel.cancel();
             Stage warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();

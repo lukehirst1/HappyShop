@@ -1,5 +1,6 @@
 package ci553.happyshop.client.emergency;
 
+import ci553.happyshop.client.Main;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
 import javafx.application.Platform;
@@ -9,11 +10,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import static javafx.application.Platform.exit;
+
 /**
  * The class EmergencyExit used to immediately shut down the entire application.
  * It is a singleton with static access, instantiation is restricted.
  */
 public class EmergencyExit {
+    protected String emergency = "src/main/resources/audio/EmergencyShutdown.wav";
     final int WIDTH = UIStyle.EmergencyExitWinWidth;
     final int HEIGHT = UIStyle.EmergencyExitWinHeight;
     private static EmergencyExit emergencyExit;
@@ -36,8 +40,18 @@ public class EmergencyExit {
         Button btnExit = new Button();
         btnExit.setGraphic(ivExit);
         btnExit.setOnAction(event -> {
-            Platform.exit(); // Gracefully exit JavaFX
-            System.exit(0);//forcefully shut down JVM (in case there are non-JavaFX threads)
+            Main.mainHolder.PlaySound(emergency);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(1900);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    exit();
+                }
+            });
         });
 
         BorderPane borderPane = new BorderPane();

@@ -110,7 +110,7 @@ public class Main extends Application
         startPickerClient();
         startOrderTracker();
 
-        // Main.mainHolder.PlaySound(welcome);   Re-record or take it out.
+        Main.mainHolder.PlaySound(welcome);
 
         // Initializes the order map for the OrderHub. This must be called after starting the observer clients
         // (such as OrderTracker and Picker clients) to ensure they are properly registered for receiving updates.
@@ -230,17 +230,18 @@ public class Main extends Application
      * Starts the EmergencyExit window - This can be used to immediately shut down the project if there is a problem.
      */
     private void startEmergencyExit(){
+
         EmergencyExit.getEmergencyExit();
     }
 
-    /**
-     * Starts the lowStockWarn window.
-     */
-    public static void startLowStockWarn()
-    {
-        LowStockWarning lowWarn = new LowStockWarning();
-        lowWarn.start(new Stage());
-    }
+//    /**
+//     * Starts the lowStockWarn window.
+//     */
+//    public static void startLowStockWarn()
+//    {
+//        LowStockWarning lowWarn = new LowStockWarning();
+//        lowWarn.start(new Stage());
+//    }
 }
 
 
