@@ -3,6 +3,7 @@ package ci553.happyshop.client.customer;
 import ci553.happyshop.client.Main;
 import ci553.happyshop.utility.UIStyle;
 import ci553.happyshop.utility.WinPosManager;
+import ci553.happyshop.utility.WindowBounds;
 import javafx.css.Stylesheet;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -12,9 +13,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.FocusModel;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import javax.sound.sampled.Line;
 
@@ -29,11 +32,14 @@ public class LowStockWarning {
     protected String clicked = "src/resources/audio/ButtonClick.wav";
 
     public Boolean basketRequest = false; // Has the user requested to add a low stock product to the trolley?
-
-    private final int WIDTH = UIStyle.lowStockWinWidth;
-    private final int HEIGHT = UIStyle.lowStockWinHeight;
+    public Boolean windowOpen = false;
 
     public CustomerModel cusModel;
+
+
+    private Stage lowStockStage;
+
+    protected Stage warnStage;
 
     /**
      * Constructs the new lowStockWarning window.
@@ -49,17 +55,20 @@ public class LowStockWarning {
         btnLowStockWarn.setStyle(UIStyle.buttonStyle);
         btnLowStockWarnNo.setStyle(UIStyle.buttonStyle);
 
-        Label warning = new Label("The stock you have requested to add to your trolley is low. Would you like to add it anyway?");
+        int WIDTH = UIStyle.lowStockWinWidth;
+
+        Label warning = new Label("It appears this product is currently low on stock. Would you like to add this product to the basket?");
         warning.setStyle(UIStyle.labelStyle);
-        HBox warningLabel = new HBox(10, warning);
-        warningLabel.setAlignment(Pos.TOP_LEFT);
+        VBox warningLabel = new VBox(10, warning);
+        warningLabel.setAlignment(Pos.CENTER);
 
         //
         VBox warningBox = new VBox(55, warningLabel, btnLowStockWarn, btnLowStockWarnNo);
 
-        warningBox.setAlignment(Pos.CENTER);
+        warningBox.setAlignment(Pos.BOTTOM_CENTER);
         warningBox.setStyle(UIStyle.lowStockWarningStyle);
         warningBox.setPrefWidth(WIDTH);
+        int HEIGHT = UIStyle.lowStockWinHeight;
         warningBox.setPrefHeight(HEIGHT);
         warningBox.setSpacing(10);
 
@@ -70,8 +79,16 @@ public class LowStockWarning {
 
         Scene warningScene = new Scene(warningBox, WIDTH, HEIGHT);
         window.setScene(warningScene);
-        window.setTitle("HappyShop Low Stock Warning");
+        window.setTitle("Product with low stock warning");
         window.show();
+        window.setResizable(false); // Fix the window in place
+        lowStockStage=window;
+        WindowBounds lowBounds = getWindowBounds();
+    }
+
+    WindowBounds getWindowBounds() {
+        return new WindowBounds(lowStockStage.getX(), lowStockStage.getY(),
+                lowStockStage.getWidth(), lowStockStage.getHeight());
     }
 
     /**
@@ -88,14 +105,13 @@ public class LowStockWarning {
             Main.mainHolder.PlaySound(clicked);
             basketRequest = true;
             cusModel.addToTrolley();
-            Stage warnStage = (Stage) warnButton.getScene().getWindow();
-            warnStage.close();
+            windowOpen = true;
         }
         else if (warnLabel.equals("Cancel Order"))
         {
             Main.mainHolder.PlaySound(clicked);
             cusModel.cancel();
-            Stage warnStage = (Stage) warnButton.getScene().getWindow();
+            warnStage = (Stage) warnButton.getScene().getWindow();
             warnStage.close();
         }
     }

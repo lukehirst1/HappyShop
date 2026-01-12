@@ -176,6 +176,7 @@ public class CustomerView  {
                 super.updateItem(product, empty);
 
                 if (empty || product == null) {
+                    String imageProductNull = "src/main/resources/ProductNull.jpg";
                     setGraphic(null);
                     System.out.println("setCellFactory - empty item");
                 }

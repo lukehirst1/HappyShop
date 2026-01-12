@@ -7,6 +7,7 @@ import ci553.happyshop.client.warehouse.WarehouseClient;
 import ci553.happyshop.client.warehouse.WarehouseModel;
 import ci553.happyshop.customException.ExcessiveOrderQuantityException;
 import ci553.happyshop.customException.SearchCheckException;
+import ci553.happyshop.customException.StockEmptyException;
 import ci553.happyshop.storageAccess.DatabaseRW;
 import ci553.happyshop.orderManagement.OrderHub;
 import ci553.happyshop.storageAccess.DatabaseRWFactory;
@@ -58,6 +59,8 @@ public class CustomerModel {
     protected String goodbye = "src/main/resources/audio/CustomerGoodbye.wav";
     protected String customerWarn = "src/main/resources/audio/CustomerStockWarning.wav";
     protected String customerEmpty = "src/main/resources/audio/CustomerStockNotAvailable.wav";
+
+    protected float currentStock;
 
     //SELECT productID, productName, description, image, unitPrice,inStock quantity
 
@@ -131,16 +134,25 @@ public class CustomerModel {
         if (theProduct.getStockQuantity() <= 15 && theProduct.getStockQuantity() > 0)
         {
             // Warn the customer that the stock is currently low, and open a new window
-            System.out.println("The stock that you requested is currently low.");
+            System.out.println("It appears the requested stock is running low.");
             Main.mainHolder.PlaySound(customerWarn);
             stockLow = true;
-            lowStockWarning.start(new Stage());
+
+            if (lowStockWarning.windowOpen)
+            {
+                System.out.println("No new windows will be opened");
+            }
+            else
+            {
+                // Window not currently open, open it.
+                lowStockWarning.start(new Stage());
+            }
         }
         // The stock is completely gone, alert the customer
         else if (theProduct.getStockQuantity() < 0)
         {
             Main.mainHolder.PlaySound(customerEmpty);
-            System.out.println("We're sorry, but the requested stock is not available.");
+            System.out.println("We're sorry, but that product is out of stock We should have some more soon.");
             stockEmpty = true;
         }
     }
@@ -152,7 +164,8 @@ public class CustomerModel {
     void addToTrolley(){
         lowStockWarning.cusModel = this;
         theProduct = cusView.obrLvProducts.getSelectionModel().getSelectedItem();
-        if (theProduct != null)
+        currentStock = theProduct.getStockQuantity();
+        if (theProduct != null && !stockEmpty)
         {
             // trolley.add(theProduct) — Product is appended to the end of the trolley.
             // To keep the trolley organized, add code here or call a method that:
@@ -160,17 +173,33 @@ public class CustomerModel {
             // 1. Merges items with the same product ID (combining their quantities).
             // 2. Sorts the products in the trolley by product ID.
 
-            if (theProduct.getStockQuantity() <= 15 && !lowStockWarning.basketRequest)
+            if (theProduct.getStockQuantity() <= 15 && theProduct.getStockQuantity() > 0 && !lowStockWarning.basketRequest)
             {
-                System.out.println("The stock is currently low...");
+                System.out.println("The product is currently running low.");
                 return;
+            }
+
+            if (theProduct.getStockQuantity() == 0)
+            {
+                try
+                {
+                    // Throw the exception
+                    stockEmpty = true;
+                    Main.mainHolder.PlaySound(customerEmpty);
+                    throw new StockEmptyException("Sorry, product out of stock");
+                }
+                catch (StockEmptyException SSE)
+                {
+                    System.out.println(SSE.getMessage());
+                }
             }
             // This code originally caused the trolley to duplicate.
             // It also sorts out the trolley by ProductID.
             organisedTrolley();
             displayTaTrolley = ProductListFormatter.buildString(trolley); //build a String for trolley so that we can show it
             Main.mainHolder.PlaySound(customerAdded);
-            System.out.println("Added to trolley");
+            currentStock -= 1;
+            System.out.println("Item added to basket");
             lowStockWarning.basketRequest = false;
         }
         // No product selected, throw an error exception
@@ -227,7 +256,7 @@ public class CustomerModel {
                     {
                         // Throw the exception
                         exceededQuantity = true;
-                        throw new ExcessiveOrderQuantityException("Sorry, it appears that item is above the allowed limit.");
+                        throw new ExcessiveOrderQuantityException("Sorry, you have exceeded the product limit for this item.");
                     }
                 catch (ExcessiveOrderQuantityException EOQE)
                 {
@@ -364,13 +393,14 @@ public class CustomerModel {
         if(theProduct != null)
         {
             imageName = theProduct.getProductImageName();
-            String relativeImageUrl = StorageLocation.imageFolder +imageName; //relative file path, eg images/0001.jpg
+            String relativeImageUrl = StorageLocation.imageFolder +imageName; //relative file path, e.g images/0001.jpg
             // Get the full absolute path to the image
             Path imageFullPath = Paths.get(relativeImageUrl).toAbsolutePath();
             imageName = imageFullPath.toUri().toString(); //get the image full Uri then convert to String
             System.out.println("Image absolute path: " + imageFullPath); // Debugging to ensure path is correct
         }
-        else{
+        else
+        {
             imageName = "imageHolder.jpg";
         }
         cusView.update(imageName, displayLaSearchResult, displayTaTrolley,displayTaReceipt);

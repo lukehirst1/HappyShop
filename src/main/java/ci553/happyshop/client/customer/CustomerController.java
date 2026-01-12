@@ -4,6 +4,7 @@ import ci553.happyshop.client.Main;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.locks.Lock;
 
 public class CustomerController {
     public CustomerModel cusModel;

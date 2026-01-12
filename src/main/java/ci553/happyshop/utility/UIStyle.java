@@ -72,7 +72,7 @@ public final class UIStyle {
     public static final int removeProNotifierWinWidth = customerWinWidth/2 +160;
     public static final int removeProNotifierWinHeight = 230;
 
-    public static final int lowStockWinWidth = 620;
+    public static final int lowStockWinWidth = 720;
     public static final int lowStockWinHeight = 120;
 
     public static final int pickerWinWidth = 310;

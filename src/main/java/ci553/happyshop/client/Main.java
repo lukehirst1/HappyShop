@@ -121,7 +121,7 @@ public class Main extends Application
 
         startEmergencyExit();
 
-//        startLowStockWarn();
+        startLowStockWarn();
     }
 
     /** The customer GUI -search product, add to trolley, cancel/submit trolley, view receipt
@@ -234,14 +234,14 @@ public class Main extends Application
         EmergencyExit.getEmergencyExit();
     }
 
-//    /**
-//     * Starts the lowStockWarn window.
-//     */
-//    public static void startLowStockWarn()
-//    {
-//        LowStockWarning lowWarn = new LowStockWarning();
-//        lowWarn.start(new Stage());
-//    }
+    /**
+     * Starts the lowStockWarn window.
+     */
+    public static void startLowStockWarn()
+    {
+        LowStockWarning lowWarn = new LowStockWarning();
+        lowWarn.start(new Stage());
+    }
 }
 
 
